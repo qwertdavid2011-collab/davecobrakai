@@ -291,7 +291,7 @@ body.admin-mode .form-row.admin-only { display: flex; }
 </style>
 </head>
 <body>
-<div id="enter-overlay">
+<div class="particles" id="particles"></div>
   <div class="eyebrow mono" style="color: var(--green); margin-bottom: 16px;">// ACCESS</div>
   <h2>Witaj</h2>
   <p style="color: var(--text-dim);">Kliknij, aby wejść</p>
@@ -506,20 +506,24 @@ async function loadDiscord() {
 
   const urls = [
     `https://api.lanyard.rest/v1/users/${DATA.discordId}`,
-    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`
+    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`,
+    `https://proxy.cors.sh/https://api.lanyard.rest/v1/users/${DATA.discordId}`
   ];
+
+  let lastError = 'brak odpowiedzi';
   for (const url of urls) {
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 7000);
+      const t = setTimeout(() => ctrl.abort(), 6000);
       const res = await fetch(url, { signal: ctrl.signal });
       clearTimeout(t);
-      if (!res.ok) continue;
+      if (!res.ok) { lastError = `HTTP ${res.status}`; continue; }
       const json = await res.json();
-      if (!json.success) continue;
+      if (!json.success) { lastError = 'success: false (sprawdź Lanyard)'; continue; }
       const d = json.data, user = d.discord_user;
       document.getElementById('discord-avatar').src = user.avatar
-        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
+        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=256`
         : 'https://cdn.discordapp.com/embed/avatars/0.png';
       document.getElementById('discord-name').textContent = user.global_name || user.username;
       const map = { online:'Online', idle:'Idle', dnd:'Nie przeszkadzać', offline:'Offline' };
@@ -532,10 +536,27 @@ async function loadDiscord() {
         if (a.type === 0) html += `<div class="activity"><strong>${a.name}</strong><br><small>${a.details || ''}</small></div>`;
       });
       document.getElementById('discord-activity').innerHTML = html || '<p style="opacity:0.6;margin-top:8px;">Brak aktywności</p>';
+      // zapisz ostatni sukces
+      try { localStorage.setItem('lastDiscord', JSON.stringify({ name: user.global_name || user.username, avatar: document.getElementById('discord-avatar').src, status: d.discord_status })); } catch(e) {}
       return;
-    } catch (e) {}
+    } catch (e) {
+      lastError = e.name === 'AbortError' ? 'timeout' : (e.message || 'błąd sieci');
+    }
   }
-  document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Nie udało się załadować profilu</p>';
+
+  // Fallback z cache
+  try {
+    const cached = JSON.parse(localStorage.getItem('lastDiscord') || 'null');
+    if (cached) {
+      document.getElementById('discord-avatar').src = cached.avatar;
+      document.getElementById('discord-name').textContent = cached.name;
+      document.getElementById('discord-status').textContent = 'Offline (cache)';
+      document.getElementById('discord-activity').innerHTML = '<p style="opacity:0.6">Nie udało się odświeżyć – pokazuję ostatnie dane</p>';
+      return;
+    }
+  } catch(e) {}
+
+  document.getElementById('discord-activity').innerHTML = `<p style="color:#ef4444">Nie udało się załadować (${lastError})</p><p class="small-note">Spróbuj na komputerze lub innej przeglądarce</p>`;
 }
 
 function renderSocials() {
@@ -630,6 +651,19 @@ function exportData() {
 updateAdminUI();
 loadData();
 setInterval(() => { if (DATA.discordId) loadDiscord(); }, 25000);
+
+// Particles
+const particlesEl = document.getElementById('particles');
+for (let i = 0; i < 25; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDuration = (12 + Math.random() * 20) + 's';
+  p.style.animationDelay = Math.random() * 10 + 's';
+  p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+  p.style.background = Math.random() > 0.5 ? 'var(--purple)' : 'var(--green)';
+  particlesEl.appendChild(p);
+}
 </script>
 </body>
 </html>
