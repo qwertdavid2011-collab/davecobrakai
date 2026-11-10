@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HACKER PROFILE</title>
+<title>Szara Strefa Gospodarki</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -133,12 +133,29 @@ header .tagline {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
-  transition: border-color 0.2s, transform 0.2s;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
 }
 .card:hover {
   border-color: var(--purple);
-  transform: translateY(-2px);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(168, 85, 247, 0.15), 0 0 0 1px rgba(168, 85, 247, 0.2);
 }
+.card:hover::before { opacity: 1; }
+.card h2 {
+  transition: color 0.3s;
+}
+.card:hover h2 { color: var(--yellow); }
 .card h2 {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.15rem;
@@ -293,9 +310,72 @@ body.admin-mode .form-row.admin-only { display: flex; }
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 1500;
+  z-index: 9999;
   display: flex;
   gap: 8px;
+}
+.music-panel {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(22, 22, 31, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+}
+.music-panel button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+.music-panel button:hover { border-color: var(--purple); background: rgba(168, 85, 247, 0.15); }
+.volume-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.volume-wrap input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100px;
+  height: 6px;
+  background: linear-gradient(to right, var(--purple) 0%, var(--purple) var(--val, 60%), #2a2a38 var(--val, 60%));
+  border-radius: 3px;
+  outline: none;
+  border: none;
+  padding: 0;
+}
+.volume-wrap input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--purple);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--purple);
+}
+.volume-wrap input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--purple);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+@media (max-width: 640px) {
+  .admin-panel { bottom: 16px; right: 16px; }
+  .music-panel { bottom: 16px; left: 16px; padding: 8px 12px; gap: 8px; }
+  .volume-wrap input[type="range"] { width: 70px; }
 }
 .admin-panel button {
   font-size: 0.85rem;
@@ -320,10 +400,10 @@ body.admin-mode .form-row.admin-only { display: flex; }
 <div class="particles" id="particles"></div>
 
 <div id="enter-overlay">
-  <div class="eyebrow mono" style="color: var(--green); margin-bottom: 16px;">// ACCESS</div>
-  <h2>Witaj</h2>
+  <div class="eyebrow mono" style="color: var(--green); margin-bottom: 16px;">ACCESS GRANTED</div>
+  <h2>Witaj w Strefie SSG</h2>
   <p style="color: var(--text-dim);">Kliknij, aby wejść</p>
-  <button id="enter-btn">▶ Wejdź / Odtwórz Kokaina</button>
+  <button id="enter-btn">▶ WELCOME</button>
   <p class="small-note">Muzyka startuje po interakcji</p>
 </div>
 
@@ -395,12 +475,21 @@ body.admin-mode .form-row.admin-only { display: flex; }
         <div id="videos-list"></div>
         <div class="form-row admin-only">
           <input type="text" id="video-title" placeholder="Tytuł">
-          <input type="text" id="video-url" placeholder="Link do MP4">
+          <input type="text" id="video-url" placeholder="Link do MP4 lub YouTube">
           <button onclick="addVideo()">Dodaj</button>
         </div>
-        <p class="small-note admin-only">Bezpośredni link do pliku .mp4</p>
+        <p class="small-note admin-only">Bezpośredni link do .mp4 albo link YouTube</p>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Music panel -->
+<div class="music-panel" id="music-panel" style="display:none;">
+  <button id="music-toggle" onclick="toggleMusic()">⏸ Pauza</button>
+  <div class="volume-wrap">
+    <input type="range" id="volume-slider" min="0" max="100" value="60" oninput="setVolume(this.value)">
+    <span id="volume-label" style="font-size:0.75rem; color:var(--text-dim); min-width:32px;">60%</span>
   </div>
 </div>
 
@@ -419,7 +508,7 @@ body.admin-mode .form-row.admin-only { display: flex; }
       <button onclick="loginAdmin()">Zaloguj</button>
       <button onclick="document.getElementById('login-modal').style.display='none'" style="background:transparent; border:1px solid var(--border);">Anuluj</button>
     </div>
-    <p class="small-note">Domyślne: hacker123</p>
+    <p class="small-note"></p>
   </div>
 </div>
 
@@ -431,7 +520,7 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
     height: '1', width: '1',
     videoId: '2CGv2Ud-KoE',
-    playerVars: { autoplay: 0, controls: 0 },
+    playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: '2CGv2Ud-KoE' },
     events: { onReady: () => {} }
   });
 }
@@ -439,8 +528,29 @@ function onYouTubeIframeAPIReady() {
 document.getElementById('enter-btn').onclick = () => {
   document.getElementById('enter-overlay').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
-  if (player?.playVideo) { player.playVideo(); player.setVolume(60); }
+  document.getElementById('music-panel').style.display = 'flex';
+  if (player?.playVideo) {
+    player.playVideo();
+    player.setVolume(60);
+    try { player.setLoop(true); } catch(e) {}
+  }
 };
+
+function toggleMusic() {
+  if (!player) return;
+  const state = player.getPlayerState();
+  if (state === 1) {
+    player.pauseVideo();
+    document.getElementById('music-toggle').textContent = '▶ Play';
+  } else {
+    player.playVideo();
+    document.getElementById('music-toggle').textContent = '⏸ Pauza';
+  }
+}
+function setVolume(v) {
+  if (player) player.setVolume(parseInt(v));
+  document.getElementById('volume-label').textContent = v + '%';
+}
 
 // Admin
 const ADMIN_PASSWORD = 'hacker123';
@@ -473,7 +583,7 @@ function logoutAdmin() {
 
 // Data
 let DATA = {
-  title: 'HACKER_ZONE',
+  title: 'Szara Strefa Gospodarki',
   discordId: '',
   socials: [],
   games: [
@@ -491,8 +601,8 @@ async function loadData() {
   applyData();
 }
 function applyData() {
-  document.getElementById('site-title').textContent = DATA.title || 'HACKER_ZONE';
-  document.title = DATA.title || 'Profile';
+  document.getElementById('site-title').textContent = DATA.title || 'Szara Strefa Gospodarki';
+  document.title = DATA.title || 'SSG';
   if (isAdmin) {
     document.getElementById('title-input').value = DATA.title || '';
     document.getElementById('discord-id').value = DATA.discordId || '';
@@ -648,14 +758,20 @@ async function addGame() {
 function removeGame(i) { DATA.games.splice(i,1); renderGames(); }
 
 function renderVideos() {
-  document.getElementById('videos-list').innerHTML = DATA.videos.map((v,i) => `
+  document.getElementById('videos-list').innerHTML = DATA.videos.map((v,i) => {
+    const ytMatch = v.src.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+    const content = ytMatch
+      ? `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}" style="width:100%; aspect-ratio:16/9; border:none; border-radius:10px; margin-top:8px;" allowfullscreen></iframe>`
+      : `<video class="video-player" controls><source src="${v.src}" type="video/mp4"></video>`;
+    return `
     <div class="item" style="flex-direction:column;align-items:stretch;">
       <div style="display:flex;justify-content:space-between;width:100%;">
         <strong>${v.title}</strong>
         <button class="edit-btn admin-only" onclick="removeVideo(${i})">✕</button>
       </div>
-      <video class="video-player" controls><source src="${v.src}" type="video/mp4"></video>
-    </div>`).join('') || '<p style="color:var(--text-dim);font-size:0.9rem;">Brak filmików</p>';
+      ${content}
+    </div>`;
+  }).join('') || '<p style="color:var(--text-dim);font-size:0.9rem;">Brak filmików</p>';
 }
 function addVideo() {
   const t = document.getElementById('video-title').value.trim() || 'Bez tytułu';
