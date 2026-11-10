@@ -506,40 +506,61 @@ async function loadDiscord() {
   document.getElementById('discord-setup').style.display = 'none';
   document.getElementById('discord-placeholder').style.display = 'none';
   document.getElementById('discord-profile').style.display = 'block';
-  try {
-    const res = await fetch(`https://api.lanyard.rest/v1/users/${DATA.discordId}`);
-    const json = await res.json();
-    if (!json.success) {
-      document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd: Nieprawidłowe ID lub nie jesteś na serwerze Lanyard (discord.gg/lanyard)</p>';
-      return;
-    }
-    const d = json.data;
-    const user = d.discord_user;
-    const avatar = user.avatar 
-      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
-      : 'https://cdn.discordapp.com/embed/avatars/0.png';
-    document.getElementById('discord-avatar').src = avatar;
-    document.getElementById('discord-name').textContent = user.global_name || user.username;
-    const statusMap = { online: 'Online', idle: 'Idle', dnd: 'Nie przeszkadzać', offline: 'Offline' };
-    document.getElementById('discord-status').textContent = statusMap[d.discord_status] || d.discord_status;
-    const dot = document.getElementById('status-dot');
-    dot.className = 'status-dot status-' + (d.discord_status || 'offline');
+  document.getElementById('discord-activity').innerHTML = '<p>Ładowanie profilu...</p>';
 
-    let activityHtml = '';
-    if (d.listening_to_spotify && d.spotify) {
-      activityHtml += `<div class="activity"><strong>🎧 Spotify:</strong> ${d.spotify.song}<br><small>${d.spotify.artist}</small></div>`;
+  const urls = [
+    `https://api.lanyard.rest/v1/users/${DATA.discordId}`,
+    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`
+  ];
+
+  let lastError = '';
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        lastError = `HTTP ${res.status}`;
+        continue;
+      }
+      const json = await res.json();
+      if (!json.success) {
+        lastError = json.error?.message || 'API zwróciło success: false (prawdopodobnie nie jesteś na serwerze Lanyard)';
+        continue;
+      }
+      const d = json.data;
+      const user = d.discord_user;
+      const avatar = user.avatar 
+        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
+        : 'https://cdn.discordapp.com/embed/avatars/0.png';
+      document.getElementById('discord-avatar').src = avatar;
+      document.getElementById('discord-name').textContent = user.global_name || user.username;
+      const statusMap = { online: 'Online', idle: 'Idle', dnd: 'Nie przeszkadzać', offline: 'Offline' };
+      document.getElementById('discord-status').textContent = statusMap[d.discord_status] || d.discord_status;
+      const dot = document.getElementById('status-dot');
+      dot.className = 'status-dot status-' + (d.discord_status || 'offline');
+
+      let activityHtml = '';
+      if (d.listening_to_spotify && d.spotify) {
+        activityHtml += `<div class="activity"><strong>🎧 Spotify:</strong> ${d.spotify.song}<br><small>${d.spotify.artist}</small></div>`;
+      }
+      if (d.activities && d.activities.length) {
+        d.activities.forEach(act => {
+          if (act.type === 0) {
+            activityHtml += `<div class="activity"><strong>🎮 Gra:</strong> ${act.name}<br><small>${act.details || ''}</small></div>`;
+          }
+        });
+      }
+      document.getElementById('discord-activity').innerHTML = activityHtml || '<p style="opacity:0.6">Brak aktywności</p>';
+      return; // sukces
+    } catch (e) {
+      lastError = e.message || 'Błąd sieci';
     }
-    if (d.activities && d.activities.length) {
-      d.activities.forEach(act => {
-        if (act.type === 0) {
-          activityHtml += `<div class="activity"><strong>🎮 Gra:</strong> ${act.name}<br><small>${act.details || ''}</small></div>`;
-        }
-      });
-    }
-    document.getElementById('discord-activity').innerHTML = activityHtml || '<p style="opacity:0.6">Brak aktywności</p>';
-  } catch (e) {
-    document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd połączenia z Lanyard. Sprawdź internet i czy jesteś na serwerze Lanyard.</p>';
   }
+
+  document.getElementById('discord-activity').innerHTML = `
+    <p style="color:#ef4444">Błąd ładowania profilu</p>
+    <p class="small-note">Szczegóły: ${lastError}</p>
+    <p class="small-note">Upewnij się, że:<br>1. Jesteś na serwerze discord.gg/lanyard<br>2. ID jest poprawne (same cyfry)<br>3. Wyłączyłeś bloker reklam</p>
+  `;
 }
 
 function renderSocials() {
