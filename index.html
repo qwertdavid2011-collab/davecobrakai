@@ -353,10 +353,12 @@ body.admin-mode .form-row.admin-only { display: flex; }
         <h2>Gry</h2>
         <div id="games-list"></div>
         <div class="form-row admin-only">
-          <input type="text" id="game-name" placeholder="Nazwa gry">
-          <input type="text" id="game-desc" placeholder="Opis">
+          <input type="text" id="game-name" placeholder="Nazwa gry lub Steam App ID">
+          <input type="text" id="game-desc" placeholder="Opis (opcjonalnie)">
+          <input type="text" id="game-icon" placeholder="Link do ikony (jeśli nie Steam)">
           <button onclick="addGame()">Dodaj</button>
         </div>
+        <p class="small-note admin-only">Jeśli wpiszesz sam numer (np. 730), strona pobierze dane ze Steama.</p>
       </div>
 
       <!-- Videos -->
@@ -557,17 +559,42 @@ function removeSocial(i) { DATA.socials.splice(i,1); renderSocials(); }
 function renderGames() {
   document.getElementById('games-list').innerHTML = DATA.games.map((g,i) => `
     <div class="item">
-      <div><span class="name">${g.name}</span><span class="desc">${g.desc||''}</span></div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        ${g.icon ? `<img src="${g.icon}" alt="" style="width:32px; height:32px; border-radius:6px; object-fit:cover;">` : ''}
+        <div><span class="name">${g.name}</span><span class="desc">${g.desc||''}</span></div>
+      </div>
       <button class="edit-btn admin-only" onclick="removeGame(${i})">✕</button>
     </div>`).join('');
 }
-function addGame() {
-  const n = document.getElementById('game-name').value.trim();
-  if (!n) return;
-  DATA.games.push({ name: n, desc: document.getElementById('game-desc').value.trim() });
+async function addGame() {
+  const input = document.getElementById('game-name').value.trim();
+  if (!input) return alert('Podaj nazwę lub Steam App ID');
+
+  let name = input;
+  let desc = document.getElementById('game-desc').value.trim();
+  let icon = document.getElementById('game-icon').value.trim();
+
+  // Jeśli to same cyfry – traktuj jako Steam App ID
+  if (/^\d+$/.test(input)) {
+    try {
+      const res = await fetch(`https://store.steampowered.com/api/appdetails?appids=${input}`);
+      const json = await res.json();
+      const data = json[input]?.data;
+      if (data) {
+        name = data.name || input;
+        if (!desc) desc = data.short_description ? data.short_description.slice(0, 80) + '…' : '';
+        icon = data.header_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${input}/header.jpg`;
+      }
+    } catch (e) {
+      console.log('Steam fetch failed', e);
+    }
+  }
+
+  DATA.games.push({ name, desc, icon });
   renderGames();
   document.getElementById('game-name').value = '';
   document.getElementById('game-desc').value = '';
+  document.getElementById('game-icon').value = '';
 }
 function removeGame(i) { DATA.games.splice(i,1); renderGames(); }
 
