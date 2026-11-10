@@ -226,8 +226,19 @@ button:hover {
   z-index: 1500;
 }
 .admin-panel button {
-  font-size: 0.9rem;
-  padding: 10px 16px;
+  font-size: 1rem;
+  padding: 12px 18px;
+  box-shadow: 0 0 15px var(--purple);
+}
+@media (max-width: 768px) {
+  .admin-panel {
+    bottom: 70px;
+    right: 15px;
+  }
+  .admin-panel button {
+    font-size: 0.95rem;
+    padding: 14px 16px;
+  }
 }
 </style>
 </head>
@@ -382,7 +393,15 @@ let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
 function updateAdminUI() {
   document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = isAdmin ? '' : 'none';
+    if (isAdmin) {
+      el.style.display = '';
+      // przywróć prawidłowy display dla form-row
+      if (el.classList.contains('form-row')) {
+        el.style.display = 'flex';
+      }
+    } else {
+      el.style.display = 'none';
+    }
   });
   document.getElementById('admin-login-btn').style.display = isAdmin ? 'none' : 'inline-block';
   document.getElementById('admin-logout-btn').style.display = isAdmin ? 'inline-block' : 'none';
@@ -401,6 +420,7 @@ function loginAdmin() {
     isAdmin = true;
     sessionStorage.setItem('isAdmin', 'true');
     updateAdminUI();
+    applyData(); // ponownie wyrenderuj listy z przyciskami usuwania
     document.getElementById('login-modal').style.display = 'none';
     alert('Zalogowano jako admin. Możesz teraz edytować.');
   } else {
