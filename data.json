@@ -1,15 +1,29 @@
 {
-  "title": "HACKER_ZONE",
+  "title": "Szara Strefa Gospodarki",
   "discordId": "295257285163220996",
-  "socials": [],
-  "games": [
+  "socials": [
     {
-      "name": "Arena Breakout Infinite",
-      "desc": "Taktyczna strzelanka"
+      "name": "Discord Szara Strefa Gospodarki",
+      "url": "https://discord.gg/EJ79upvx3A"
     },
     {
-      "name": "FiveM",
-      "desc": "GTA V Roleplay"
+      "name": "Mój Kanał YouTube",
+      "url": "https://www.youtube.com/@DaVe2601"
+    },
+    {
+      "name": "Mój Steam Profile",
+      "url": "https://steamcommunity.com/profiles/76561198215103761/"
+    },
+    {
+      "name": "Mój TikTok",
+      "url": "https://www.tiktok.com/@.dave982?is_from_webapp=1&sender_device=pc"
+    }
+  ],
+  "games": [
+    {
+      "name": "2073620",
+      "desc": "Arena Breakout Infinite",
+      "icon": ""
     }
   ],
   "videos": []
