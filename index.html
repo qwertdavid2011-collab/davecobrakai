@@ -776,18 +776,29 @@ async function addGame() {
 
   // Jeśli to same cyfry – traktuj jako Steam App ID
   if (/^\d+$/.test(input)) {
-    try {
-      const res = await fetch(`https://store.steampowered.com/api/appdetails?appids=${input}`);
-      const json = await res.json();
-      const data = json[input]?.data;
-      if (data) {
-        name = data.name || input;
-        if (!desc) desc = data.short_description ? data.short_description.slice(0, 80) + '…' : '';
-        icon = data.header_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${input}/header.jpg`;
+    const steamUrls = [
+      `https://store.steampowered.com/api/appdetails?appids=${input}`,
+      `https://corsproxy.io/?${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${input}`)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${input}`)}`
+    ];
+    for (const url of steamUrls) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) continue;
+        const json = await res.json();
+        const data = json[input]?.data;
+        if (data && data.name) {
+          name = data.name;
+          if (!desc) desc = data.short_description ? data.short_description.slice(0, 100) + '…' : '';
+          icon = data.header_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${input}/header.jpg`;
+          break;
+        }
+      } catch (e) {
+        continue;
       }
-    } catch (e) {
-      console.log('Steam fetch failed', e);
     }
+    // Fallback icon even if name fetch failed
+    if (!icon) icon = `https://cdn.cloudflare.steamstatic.com/steam/apps/${input}/header.jpg`;
   }
 
   DATA.games.push({ name, desc, icon });
