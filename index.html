@@ -4,437 +4,444 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HACKER PROFILE</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --purple: #a855f7;
+  --purple-dim: #7c3aed;
   --dark-green: #022c22;
   --green: #10b981;
   --yellow: #facc15;
-  --bg: #020617;
-  --card: #0f172a;
-  --text: #e2e8f0;
+  --bg: #0a0a0f;
+  --bg-elevated: #111118;
+  --card: #16161f;
+  --border: #2a2a38;
+  --text: #e8e8f0;
+  --text-dim: #8a8aa0;
+  --accent: #a855f7;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
+  line-height: 1.6;
 }
-#matrix {
+.mono { font-family: 'JetBrains Mono', monospace; }
+.display { font-family: 'Space Grotesk', sans-serif; }
+
+/* Subtle background grid */
+body::before {
+  content: '';
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
   z-index: -1;
-  opacity: 0.15;
-  pointer-events: none;
 }
-.scanlines {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%);
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0.3;
-}
+
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
-  position: relative;
-  z-index: 1;
+  padding: 40px 24px 80px;
 }
+
+/* Header */
 header {
   text-align: center;
-  padding: 40px 20px;
-  border-bottom: 2px solid var(--purple);
-  margin-bottom: 30px;
-  position: relative;
+  padding: 60px 0 50px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 50px;
+}
+header .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 16px;
 }
 header h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 3.5rem;
-  color: var(--yellow);
-  text-shadow: 0 0 20px var(--purple), 0 0 40px var(--green);
-  letter-spacing: 4px;
-  animation: glitch 3s infinite;
-}
-@keyframes glitch {
-  0%, 100% { text-shadow: 0 0 20px var(--purple), 0 0 40px var(--green); transform: translate(0); }
-  20% { text-shadow: -2px 0 var(--purple), 2px 0 var(--green); transform: translate(-2px, 1px); }
-  40% { text-shadow: 2px 0 var(--purple), -2px 0 var(--green); transform: translate(2px, -1px); }
-  60% { text-shadow: 0 0 20px var(--yellow); transform: translate(0); }
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--yellow), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
 }
 header .tagline {
-  color: var(--green);
-  font-size: 1.2rem;
-  margin-top: 10px;
-  letter-spacing: 2px;
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  max-width: 480px;
+  margin: 0 auto;
 }
+
+/* Sections */
+.section {
+  margin-bottom: 60px;
+}
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--purple);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* Cards grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 25px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
 }
 .card {
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid var(--purple);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: border-color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: var(--yellow);
-  box-shadow: 0 0 35px rgba(250, 204, 21, 0.4);
-  transform: translateY(-5px);
+  border-color: var(--purple);
+  transform: translateY(-2px);
 }
 .card h2 {
-  color: var(--purple);
-  font-family: 'Orbitron', sans-serif;
-  margin-bottom: 15px;
-  font-size: 1.4rem;
-  border-bottom: 1px solid var(--green);
-  padding-bottom: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.discord-card { text-align: center; }
-.discord-avatar {
-  width: 120px;
-  height: 120px;
+.card h2::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--purple);
   border-radius: 50%;
-  border: 4px solid var(--purple);
-  margin: 0 auto 15px;
-  box-shadow: 0 0 20px var(--purple);
+}
+
+/* Discord */
+.discord-card {
+  text-align: center;
+}
+.discord-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--purple);
+  margin: 0 auto 16px;
   object-fit: cover;
 }
 .status-dot {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: 6px;
+  vertical-align: middle;
 }
-.status-online { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
-.status-idle { background: #eab308; box-shadow: 0 0 10px #eab308; }
-.status-dnd { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+.status-online { background: #22c55e; }
+.status-idle { background: #eab308; }
+.status-dnd { background: #ef4444; }
 .status-offline { background: #64748b; }
 .activity {
-  background: rgba(2, 44, 34, 0.6);
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 12px;
   border-left: 3px solid var(--green);
+  text-align: left;
+  font-size: 0.9rem;
 }
-.social-item, .game-item, .video-item {
+
+/* Lists */
+.item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  margin: 8px 0;
-  background: rgba(2, 6, 23, 0.7);
-  border-radius: 6px;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
 }
-.social-item a, .game-item span {
+.item:last-child { border-bottom: none; }
+.item a, .item .name {
   color: var(--yellow);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 500;
 }
-.social-item a:hover { color: var(--green); text-shadow: 0 0 10px var(--green); }
-button, input, textarea {
-  background: #1e293b;
-  color: var(--text);
-  border: 1px solid var(--purple);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-family: inherit;
-  margin: 5px 0;
+.item a:hover { color: var(--green); }
+.item .desc {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 2px;
 }
-button {
-  background: linear-gradient(45deg, var(--purple), var(--dark-green));
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  border: none;
-  transition: all 0.2s;
-}
-button:hover {
-  background: linear-gradient(45deg, var(--yellow), var(--purple));
-  color: black;
-  box-shadow: 0 0 15px var(--yellow);
-}
+
+/* Forms */
 .form-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 16px;
 }
-.form-row input { flex: 1; min-width: 150px; }
+input, button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+input:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+button {
+  background: var(--purple);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+button:hover { background: var(--purple-dim); }
+.edit-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+.edit-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+/* Overlay */
 #enter-overlay {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.95);
+  inset: 0;
+  background: rgba(10, 10, 15, 0.97);
   z-index: 2000;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding: 20px;
 }
 #enter-overlay h2 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2.5rem;
-  color: var(--yellow);
-  margin-bottom: 20px;
-  text-shadow: 0 0 20px var(--purple);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--yellow), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 #enter-btn {
-  font-size: 1.5rem;
-  padding: 15px 40px;
-  margin: 20px;
-}
-.video-player {
-  width: 100%;
-  max-height: 200px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--green);
+  margin-top: 24px;
+  padding: 14px 32px;
+  font-size: 1rem;
 }
 .small-note {
   font-size: 0.8rem;
-  color: #94a3b8;
-  margin-top: 10px;
+  color: var(--text-dim);
+  margin-top: 12px;
 }
-.edit-btn {
-  font-size: 0.8rem;
-  padding: 4px 8px;
-  background: #334155;
-}
-.admin-only { display: none !important; }
-body.admin-mode .admin-only { display: block !important; }
-body.admin-mode .form-row.admin-only { display: flex !important; }
-body.admin-mode .admin-panel .admin-only { display: inline-block !important; }
+
+/* Admin */
+.admin-only { display: none; }
+body.admin-mode .admin-only { display: block; }
+body.admin-mode .form-row.admin-only { display: flex; }
 .admin-panel {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 24px;
+  right: 24px;
   z-index: 1500;
+  display: flex;
+  gap: 8px;
 }
 .admin-panel button {
-  font-size: 1rem;
-  padding: 12px 18px;
-  box-shadow: 0 0 15px var(--purple);
+  font-size: 0.85rem;
+  padding: 10px 16px;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
 }
-@media (max-width: 768px) {
-  .admin-panel {
-    bottom: 70px;
-    right: 15px;
-  }
-  .admin-panel button {
-    font-size: 0.95rem;
-    padding: 14px 16px;
-  }
+@media (max-width: 640px) {
+  .admin-panel { bottom: 16px; right: 16px; }
+  .container { padding: 24px 16px 100px; }
+  header { padding: 40px 0 30px; }
+}
+
+.video-player {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 8px;
+  background: #000;
 }
 </style>
 </head>
 <body>
-<canvas id="matrix"></canvas>
-<div class="scanlines"></div>
-
 <div id="enter-overlay">
-  <h2>ACCESS GRANTED</h2>
-  <p style="color: var(--green); margin-bottom: 10px;">Kliknij aby wejść i puścić Miami Yacine - Kokaina</p>
-  <button id="enter-btn">▶ ENTER / PLAY KOKAINA</button>
-  <p class="small-note">Muzyka startuje po interakcji (polityka przeglądarek)</p>
+  <div class="eyebrow mono" style="color: var(--green); margin-bottom: 16px;">// ACCESS</div>
+  <h2>Witaj</h2>
+  <p style="color: var(--text-dim);">Kliknij, aby wejść</p>
+  <button id="enter-btn">▶ Wejdź / Odtwórz Kokaina</button>
+  <p class="small-note">Muzyka startuje po interakcji</p>
 </div>
 
 <div class="container" id="main-content" style="display:none;">
   <header>
+    <div class="eyebrow">/ 01 — PROFILE</div>
     <h1 id="site-title">HACKER_ZONE</h1>
-    <div class="tagline">// DARK • GREEN • PURPLE • YELLOW</div>
-    <div class="admin-only">
-      <input type="text" id="title-input" placeholder="Zmień tytuł strony" style="margin-top:15px; max-width:300px;">
+    <div class="tagline">Dark · Purple · Green · Yellow</div>
+    <div class="admin-only" style="margin-top: 20px;">
+      <input type="text" id="title-input" placeholder="Zmień tytuł" style="max-width: 280px;">
     </div>
   </header>
 
-  <div class="grid">
-    <!-- DISCORD -->
-    <div class="card discord-card">
-      <h2>⚡ DISCORD PROFILE</h2>
-      <div id="discord-setup" class="admin-only">
-        <input type="text" id="discord-id" placeholder="Twój Discord User ID">
-        <button onclick="saveDiscordId()">ZAPISZ ID</button>
-        <p class="small-note">1. Dołącz do: discord.gg/lanyard<br>2. Wklej swoje User ID</p>
+  <div class="section">
+    <div class="section-label">/ 02 — STATUS</div>
+    <div class="grid">
+      <!-- Discord -->
+      <div class="card discord-card">
+        <h2>Discord</h2>
+        <div id="discord-setup" class="admin-only">
+          <input type="text" id="discord-id" placeholder="Discord User ID">
+          <button onclick="saveDiscordId()" style="margin-top:8px;">Zapisz ID</button>
+          <p class="small-note">Dołącz do discord.gg/lanyard, potem wklej ID</p>
+        </div>
+        <div id="discord-profile" style="display:none;">
+          <img id="discord-avatar" class="discord-avatar" src="" alt="">
+          <h3 id="discord-name" style="margin-bottom:6px;"></h3>
+          <p><span class="status-dot" id="status-dot"></span><span id="discord-status"></span></p>
+          <div id="discord-activity"></div>
+          <button class="edit-btn admin-only" onclick="changeDiscordId()" style="margin-top:12px;">Zmień ID</button>
+        </div>
+        <div id="discord-placeholder" style="color: var(--text-dim); font-size: 0.9rem;">
+          Profil pojawi się po ustawieniu ID
+        </div>
       </div>
-      <div id="discord-profile" style="display:none;">
-        <img id="discord-avatar" class="discord-avatar" src="" alt="avatar">
-        <h3 id="discord-name"></h3>
-        <p id="discord-status-line"><span class="status-dot" id="status-dot"></span><span id="discord-status"></span></p>
-        <div id="discord-activity"></div>
-        <button class="edit-btn admin-only" onclick="changeDiscordId()">Zmień ID</button>
-      </div>
-      <div id="discord-placeholder" style="opacity:0.6; margin-top:10px;">
-        Profil Discord pojawi się po ustawieniu ID (tylko admin)
+
+      <!-- Socials -->
+      <div class="card">
+        <h2>Social Media</h2>
+        <div id="socials-list"></div>
+        <div class="form-row admin-only">
+          <input type="text" id="social-name" placeholder="Nazwa">
+          <input type="text" id="social-url" placeholder="Link">
+          <button onclick="addSocial()">Dodaj</button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- SOCIALS -->
-    <div class="card">
-      <h2>🔗 SOCIAL MEDIA</h2>
-      <div id="socials-list"></div>
-      <div class="form-row admin-only">
-        <input type="text" id="social-name" placeholder="Nazwa (np. Instagram)">
-        <input type="text" id="social-url" placeholder="Link">
-        <button onclick="addSocial()">DODAJ</button>
+  <div class="section">
+    <div class="section-label">/ 03 — CONTENT</div>
+    <div class="grid">
+      <!-- Games -->
+      <div class="card">
+        <h2>Gry</h2>
+        <div id="games-list"></div>
+        <div class="form-row admin-only">
+          <input type="text" id="game-name" placeholder="Nazwa gry">
+          <input type="text" id="game-desc" placeholder="Opis">
+          <button onclick="addGame()">Dodaj</button>
+        </div>
       </div>
-    </div>
 
-    <!-- GAMES -->
-    <div class="card">
-      <h2>🎮 GRY</h2>
-      <div id="games-list"></div>
-      <div class="form-row admin-only">
-        <input type="text" id="game-name" placeholder="Nazwa gry">
-        <input type="text" id="game-desc" placeholder="Opis / platforma">
-        <button onclick="addGame()">DODAJ GRĘ</button>
+      <!-- Videos -->
+      <div class="card">
+        <h2>Filmiki</h2>
+        <div id="videos-list"></div>
+        <div class="form-row admin-only">
+          <input type="text" id="video-title" placeholder="Tytuł">
+          <input type="text" id="video-url" placeholder="Link do MP4">
+          <button onclick="addVideo()">Dodaj</button>
+        </div>
+        <p class="small-note admin-only">Bezpośredni link do pliku .mp4</p>
       </div>
-    </div>
-
-    <!-- VIDEOS -->
-    <div class="card">
-      <h2>🎬 FILMIKI MP4</h2>
-      <div id="videos-list"></div>
-      <div class="form-row admin-only">
-        <input type="text" id="video-title" placeholder="Tytuł filmiku">
-        <input type="text" id="video-url" placeholder="Link do MP4">
-        <button onclick="addVideo()">DODAJ FILMIK</button>
-      </div>
-      <p class="small-note admin-only">Używaj bezpośrednich linków do MP4 (np. z GitHub, Google Drive z udostępnieniem publicznym itp.)</p>
     </div>
   </div>
 </div>
 
 <!-- Admin panel -->
 <div class="admin-panel">
-  <button id="admin-login-btn" onclick="showLogin()">🔐 ADMIN</button>
+  <button id="admin-login-btn" onclick="showLogin()">Admin</button>
   <button id="admin-logout-btn" class="admin-only" onclick="logoutAdmin()" style="display:none;">Wyloguj</button>
-  <button id="export-btn" class="admin-only" onclick="exportData()" style="display:none;">⬇️ Pobierz data.json</button>
+  <button id="export-btn" class="admin-only" onclick="exportData()" style="display:none;">Pobierz data.json</button>
 </div>
 
-<div id="login-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; align-items:center; justify-content:center;">
-  <div style="background:#0f172a; padding:30px; border-radius:12px; border:2px solid var(--purple); text-align:center;">
-    <h3 style="color:var(--yellow); margin-bottom:15px;">HASŁO ADMINA</h3>
-    <input type="password" id="admin-password" placeholder="Wpisz hasło" style="width:220px; margin-bottom:15px;">
-    <br>
-    <button onclick="loginAdmin()">ZALOGUJ</button>
-    <button onclick="document.getElementById('login-modal').style.display='none'" style="margin-left:10px;">ANULUJ</button>
-    <p class="small-note" style="margin-top:15px;">Domyślne hasło: hacker123<br>(zmień je w kodzie jeśli chcesz)</p>
+<div id="login-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:3000; align-items:center; justify-content:center;">
+  <div style="background:var(--card); padding:32px; border-radius:16px; border:1px solid var(--border); text-align:center; max-width:320px;">
+    <h3 style="margin-bottom:16px; font-family:'Space Grotesk',sans-serif;">Hasło admina</h3>
+    <input type="password" id="admin-password" placeholder="Hasło" style="width:100%; margin-bottom:16px;">
+    <div style="display:flex; gap:8px; justify-content:center;">
+      <button onclick="loginAdmin()">Zaloguj</button>
+      <button onclick="document.getElementById('login-modal').style.display='none'" style="background:transparent; border:1px solid var(--border);">Anuluj</button>
+    </div>
+    <p class="small-note">Domyślne: hacker123</p>
   </div>
 </div>
 
-<div id="yt-player" style="position:fixed; bottom:-9999px; left:-9999px;"></div>
-
+<div id="yt-player" style="position:fixed; bottom:-9999px;"></div>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 let player;
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
-    height: '1',
-    width: '1',
+    height: '1', width: '1',
     videoId: '2CGv2Ud-KoE',
-    playerVars: { autoplay: 0, controls: 0, disablekb: 1, modestbranding: 1 },
-    events: { onReady: onPlayerReady }
+    playerVars: { autoplay: 0, controls: 0 },
+    events: { onReady: () => {} }
   });
 }
-function onPlayerReady(event) {}
-
-// Matrix
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(1);
-
-function drawMatrix() {
-  ctx.fillStyle = 'rgba(2, 6, 23, 0.05)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#10b981';
-  ctx.font = fontSize + 'px monospace';
-  for (let i = 0; i < drops.length; i++) {
-    const text = chars[Math.floor(Math.random() * chars.length)];
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-    drops[i]++;
-  }
-}
-setInterval(drawMatrix, 35);
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
 
 document.getElementById('enter-btn').onclick = () => {
   document.getElementById('enter-overlay').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
-  if (player && player.playVideo) {
-    player.playVideo();
-    player.setVolume(70);
-  }
+  if (player?.playVideo) { player.playVideo(); player.setVolume(60); }
 };
 
-// ============ ADMIN ============
-const ADMIN_PASSWORD = 'hacker123'; // <-- ZMIEŃ TO HASŁO
+// Admin
+const ADMIN_PASSWORD = 'hacker123';
 let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
 function updateAdminUI() {
-  if (isAdmin) {
-    document.body.classList.add('admin-mode');
-  } else {
-    document.body.classList.remove('admin-mode');
-  }
+  document.body.classList.toggle('admin-mode', isAdmin);
   document.getElementById('admin-login-btn').style.display = isAdmin ? 'none' : 'inline-block';
   document.getElementById('admin-logout-btn').style.display = isAdmin ? 'inline-block' : 'none';
   document.getElementById('export-btn').style.display = isAdmin ? 'inline-block' : 'none';
 }
-
 function showLogin() {
   document.getElementById('login-modal').style.display = 'flex';
-  document.getElementById('admin-password').value = '';
   document.getElementById('admin-password').focus();
 }
-
 function loginAdmin() {
-  const pass = document.getElementById('admin-password').value;
-  if (pass === ADMIN_PASSWORD) {
+  if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {
     isAdmin = true;
     sessionStorage.setItem('isAdmin', 'true');
     updateAdminUI();
-    applyData(); // ponownie wyrenderuj listy z przyciskami usuwania
+    applyData();
     document.getElementById('login-modal').style.display = 'none';
-    alert('Zalogowano jako admin. Możesz teraz edytować.');
-  } else {
-    alert('Złe hasło');
-  }
+  } else alert('Złe hasło');
 }
-
 function logoutAdmin() {
   isAdmin = false;
   sessionStorage.removeItem('isAdmin');
   updateAdminUI();
 }
 
-// ============ DATA ============
+// Data
 let DATA = {
   title: 'HACKER_ZONE',
   discordId: '',
@@ -449,19 +456,13 @@ let DATA = {
 async function loadData() {
   try {
     const res = await fetch('data.json?t=' + Date.now());
-    if (res.ok) {
-      const json = await res.json();
-      DATA = { ...DATA, ...json };
-    }
-  } catch (e) {
-    console.log('Brak data.json lub błąd ładowania – używam domyślnych danych');
-  }
+    if (res.ok) DATA = { ...DATA, ...await res.json() };
+  } catch (e) {}
   applyData();
 }
-
 function applyData() {
   document.getElementById('site-title').textContent = DATA.title || 'HACKER_ZONE';
-  document.title = DATA.title || 'HACKER PROFILE';
+  document.title = DATA.title || 'Profile';
   if (isAdmin) {
     document.getElementById('title-input').value = DATA.title || '';
     document.getElementById('discord-id').value = DATA.discordId || '';
@@ -469,25 +470,22 @@ function applyData() {
   renderSocials();
   renderGames();
   renderVideos();
-  if (DATA.discordId) {
-    loadDiscord();
-  } else {
+  if (DATA.discordId) loadDiscord();
+  else {
     document.getElementById('discord-profile').style.display = 'none';
     document.getElementById('discord-placeholder').style.display = 'block';
   }
 }
-
-document.getElementById('title-input')?.addEventListener('change', (e) => {
+document.getElementById('title-input')?.addEventListener('change', e => {
   DATA.title = e.target.value || 'HACKER_ZONE';
   document.getElementById('site-title').textContent = DATA.title;
 });
 
 function saveDiscordId() {
   const id = document.getElementById('discord-id').value.trim();
-  if (!id) return alert('Wklej Discord User ID');
-  if (!/^\d{17,20}$/.test(id)) return alert('To nie wygląda na poprawne Discord ID (powinno być samymi cyframi, ok. 18-19 znaków)');
+  if (!id || !/^\d{17,20}$/.test(id)) return alert('Podaj poprawne Discord ID (same cyfry)');
   DATA.discordId = id;
-  alert('ID zapisane lokalnie. Kliknij „Pobierz data.json” i wgraj go na GitHub, żeby wszyscy widzieli profil.');
+  alert('Zapisano. Pobierz data.json i wgraj na GitHub.');
   loadDiscord();
 }
 function changeDiscordId() {
@@ -498,170 +496,113 @@ function changeDiscordId() {
 }
 
 async function loadDiscord() {
-  if (!DATA.discordId) {
-    document.getElementById('discord-profile').style.display = 'none';
-    document.getElementById('discord-placeholder').style.display = 'block';
-    return;
-  }
+  if (!DATA.discordId) return;
   document.getElementById('discord-setup').style.display = 'none';
   document.getElementById('discord-placeholder').style.display = 'none';
   document.getElementById('discord-profile').style.display = 'block';
-  document.getElementById('discord-activity').innerHTML = '<p>Ładowanie profilu...</p>';
+  document.getElementById('discord-activity').innerHTML = '<p style="color:var(--text-dim)">Ładowanie...</p>';
 
   const urls = [
     `https://api.lanyard.rest/v1/users/${DATA.discordId}`,
-    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`
+    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`
   ];
-
-  let lastError = '';
   for (const url of urls) {
     try {
-      const res = await fetch(url, {
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      if (res.status === 403) {
-        lastError = 'HTTP 403 (serwer odrzucił zapytanie – spróbuj na komputerze lub innej przeglądarce)';
-        continue;
-      }
-      if (!res.ok) {
-        lastError = `HTTP ${res.status}`;
-        continue;
-      }
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 7000);
+      const res = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(t);
+      if (!res.ok) continue;
       const json = await res.json();
-      if (!json.success) {
-        lastError = json.error?.message || 'API zwróciło success: false (prawdopodobnie nie jesteś na serwerze Lanyard)';
-        continue;
-      }
-      const d = json.data;
-      const user = d.discord_user;
-      const avatar = user.avatar 
+      if (!json.success) continue;
+      const d = json.data, user = d.discord_user;
+      document.getElementById('discord-avatar').src = user.avatar
         ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
         : 'https://cdn.discordapp.com/embed/avatars/0.png';
-      document.getElementById('discord-avatar').src = avatar;
       document.getElementById('discord-name').textContent = user.global_name || user.username;
-      const statusMap = { online: 'Online', idle: 'Idle', dnd: 'Nie przeszkadzać', offline: 'Offline' };
-      document.getElementById('discord-status').textContent = statusMap[d.discord_status] || d.discord_status;
-      const dot = document.getElementById('status-dot');
-      dot.className = 'status-dot status-' + (d.discord_status || 'offline');
-
-      let activityHtml = '';
-      if (d.listening_to_spotify && d.spotify) {
-        activityHtml += `<div class="activity"><strong>🎧 Spotify:</strong> ${d.spotify.song}<br><small>${d.spotify.artist}</small></div>`;
-      }
-      if (d.activities && d.activities.length) {
-        d.activities.forEach(act => {
-          if (act.type === 0) {
-            activityHtml += `<div class="activity"><strong>🎮 Gra:</strong> ${act.name}<br><small>${act.details || ''}</small></div>`;
-          }
-        });
-      }
-      document.getElementById('discord-activity').innerHTML = activityHtml || '<p style="opacity:0.6">Brak aktywności</p>';
+      const map = { online:'Online', idle:'Idle', dnd:'Nie przeszkadzać', offline:'Offline' };
+      document.getElementById('discord-status').textContent = map[d.discord_status] || d.discord_status;
+      document.getElementById('status-dot').className = 'status-dot status-' + (d.discord_status || 'offline');
+      let html = '';
+      if (d.listening_to_spotify && d.spotify)
+        html += `<div class="activity"><strong>Spotify</strong><br>${d.spotify.song}<br><small>${d.spotify.artist}</small></div>`;
+      (d.activities || []).forEach(a => {
+        if (a.type === 0) html += `<div class="activity"><strong>${a.name}</strong><br><small>${a.details || ''}</small></div>`;
+      });
+      document.getElementById('discord-activity').innerHTML = html || '<p style="opacity:0.6;margin-top:8px;">Brak aktywności</p>';
       return;
-    } catch (e) {
-      lastError = e.message || 'Błąd sieci';
-    }
+    } catch (e) {}
   }
-
-  document.getElementById('discord-activity').innerHTML = `
-    <p style="color:#ef4444">Błąd ładowania profilu</p>
-    <p class="small-note">Szczegóły: ${lastError}</p>
-    <p class="small-note">Spróbuj:<br>1. Otworzyć stronę na komputerze<br>2. Innej przeglądarce (Chrome/Firefox)<br>3. Wyłączyć VPN/bloker reklam<br>4. Sprawdzić czy jesteś na discord.gg/lanyard</p>
-  `;
+  document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Nie udało się załadować profilu</p>';
 }
 
 function renderSocials() {
-  const list = document.getElementById('socials-list');
-  list.innerHTML = DATA.socials.map((s, i) => `
-    <div class="social-item">
+  document.getElementById('socials-list').innerHTML = DATA.socials.map((s,i) => `
+    <div class="item">
       <a href="${s.url}" target="_blank">${s.name}</a>
       <button class="edit-btn admin-only" onclick="removeSocial(${i})">✕</button>
-    </div>
-  `).join('') || '<p style="opacity:0.6">Brak linków</p>';
+    </div>`).join('') || '<p style="color:var(--text-dim);font-size:0.9rem;">Brak linków</p>';
 }
 function addSocial() {
-  const name = document.getElementById('social-name').value.trim();
-  const url = document.getElementById('social-url').value.trim();
-  if (!name || !url) return alert('Wypełnij nazwę i link');
-  DATA.socials.push({ name, url: url.startsWith('http') ? url : 'https://' + url });
+  const n = document.getElementById('social-name').value.trim();
+  const u = document.getElementById('social-url').value.trim();
+  if (!n || !u) return;
+  DATA.socials.push({ name: n, url: u.startsWith('http') ? u : 'https://'+u });
   renderSocials();
   document.getElementById('social-name').value = '';
   document.getElementById('social-url').value = '';
 }
-function removeSocial(i) {
-  DATA.socials.splice(i, 1);
-  renderSocials();
-}
+function removeSocial(i) { DATA.socials.splice(i,1); renderSocials(); }
 
 function renderGames() {
-  const list = document.getElementById('games-list');
-  list.innerHTML = DATA.games.map((g, i) => `
-    <div class="game-item">
-      <div>
-        <span>${g.name}</span>
-        <small style="display:block; opacity:0.7">${g.desc || ''}</small>
-      </div>
+  document.getElementById('games-list').innerHTML = DATA.games.map((g,i) => `
+    <div class="item">
+      <div><span class="name">${g.name}</span><span class="desc">${g.desc||''}</span></div>
       <button class="edit-btn admin-only" onclick="removeGame(${i})">✕</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 function addGame() {
-  const name = document.getElementById('game-name').value.trim();
-  const desc = document.getElementById('game-desc').value.trim();
-  if (!name) return alert('Podaj nazwę gry');
-  DATA.games.push({ name, desc });
+  const n = document.getElementById('game-name').value.trim();
+  if (!n) return;
+  DATA.games.push({ name: n, desc: document.getElementById('game-desc').value.trim() });
   renderGames();
   document.getElementById('game-name').value = '';
   document.getElementById('game-desc').value = '';
 }
-function removeGame(i) {
-  DATA.games.splice(i, 1);
-  renderGames();
-}
+function removeGame(i) { DATA.games.splice(i,1); renderGames(); }
 
 function renderVideos() {
-  const list = document.getElementById('videos-list');
-  list.innerHTML = DATA.videos.map((v, i) => `
-    <div class="video-item" style="flex-direction:column; align-items:stretch;">
-      <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+  document.getElementById('videos-list').innerHTML = DATA.videos.map((v,i) => `
+    <div class="item" style="flex-direction:column;align-items:stretch;">
+      <div style="display:flex;justify-content:space-between;width:100%;">
         <strong>${v.title}</strong>
         <button class="edit-btn admin-only" onclick="removeVideo(${i})">✕</button>
       </div>
-      <video class="video-player" controls>
-        <source src="${v.src}" type="video/mp4">
-      </video>
-    </div>
-  `).join('') || '<p style="opacity:0.6">Brak filmików</p>';
+      <video class="video-player" controls><source src="${v.src}" type="video/mp4"></video>
+    </div>`).join('') || '<p style="color:var(--text-dim);font-size:0.9rem;">Brak filmików</p>';
 }
 function addVideo() {
-  const title = document.getElementById('video-title').value.trim() || 'Bez tytułu';
-  const url = document.getElementById('video-url').value.trim();
-  if (!url) return alert('Podaj link do MP4');
-  DATA.videos.push({ title, src: url });
+  const t = document.getElementById('video-title').value.trim() || 'Bez tytułu';
+  const u = document.getElementById('video-url').value.trim();
+  if (!u) return;
+  DATA.videos.push({ title: t, src: u });
   renderVideos();
   document.getElementById('video-title').value = '';
   document.getElementById('video-url').value = '';
 }
-function removeVideo(i) {
-  DATA.videos.splice(i, 1);
-  renderVideos();
-}
+function removeVideo(i) { DATA.videos.splice(i,1); renderVideos(); }
 
 function exportData() {
-  const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(DATA,null,2)], {type:'application/json'}));
   a.download = 'data.json';
   a.click();
-  alert('Pobierz plik data.json i wgraj go do repozytorium na GitHubie (zastąp stary).');
+  alert('Pobierz plik i wgraj go na GitHub (zastąp stary data.json).');
 }
 
-// Init
 updateAdminUI();
 loadData();
-setInterval(() => { if (DATA.discordId) loadDiscord(); }, 20000);
+setInterval(() => { if (DATA.discordId) loadDiscord(); }, 25000);
 </script>
 </body>
 </html>
