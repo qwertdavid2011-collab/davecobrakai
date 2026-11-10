@@ -512,12 +512,13 @@ body.admin-mode .form-row.admin-only { display: flex; }
   </div>
 </div>
 
-<div id="yt-player" style="position:fixed; bottom:-9999px;"></div>
+<div id="yt-player" style="position:fixed; bottom:-9999px; left:-9999px; width:1px; height:1px;"></div>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-let player;
+let player = null;
 let playerReady = false;
-function onYouTubeIframeAPIReady() {
+
+window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('yt-player', {
     height: '1',
     width: '1',
@@ -527,32 +528,41 @@ function onYouTubeIframeAPIReady() {
       controls: 0,
       loop: 1,
       playlist: '2CGv2Ud-KoE',
-      modestbranding: 1
+      modestbranding: 1,
+      rel: 0
     },
     events: {
-      onReady: () => { playerReady = true; }
+      onReady: function() {
+        playerReady = true;
+        console.log('YouTube player ready');
+      },
+      onError: function(e) {
+        console.log('YouTube error', e.data);
+      }
     }
   });
-}
+};
 
-document.getElementById('enter-btn').onclick = () => {
+document.getElementById('enter-btn').onclick = function() {
   document.getElementById('enter-overlay').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('music-panel').style.display = 'flex';
-  const tryPlay = () => {
-    if (playerReady && player && player.playVideo) {
-      player.playVideo();
+
+  function attemptPlay() {
+    if (playerReady && player && typeof player.playVideo === 'function') {
+      player.unMute();
       player.setVolume(60);
+      player.playVideo();
     } else {
-      setTimeout(tryPlay, 300);
+      setTimeout(attemptPlay, 200);
     }
-  };
-  tryPlay();
+  }
+  attemptPlay();
 };
 
 function toggleMusic() {
   if (!player || !playerReady) return;
-  const state = player.getPlayerState();
+  var state = player.getPlayerState();
   if (state === 1) {
     player.pauseVideo();
     document.getElementById('music-toggle').textContent = '▶ Play';
@@ -562,7 +572,9 @@ function toggleMusic() {
   }
 }
 function setVolume(v) {
-  if (player && playerReady) player.setVolume(parseInt(v));
+  if (player && playerReady) {
+    player.setVolume(parseInt(v, 10));
+  }
   document.getElementById('volume-label').textContent = v + '%';
 }
 
