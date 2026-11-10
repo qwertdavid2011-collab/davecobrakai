@@ -157,5 +157,37 @@
           <div class="name">Drugi Lider</div>
           <div class="role">Lider</div>
           <a href="https://discord.com/users/334720799485329418" class="discord" target="_blank">Discord</a>
-        </
-... 
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Gry</div>
+      <div class="games">
+        <div class="game">
+          <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/cocrs8.jpg" alt="Arena Breakout Infinite">
+          <div class="game-name">Arena Breakout Infinite</div>
+        </div>
+        <div class="game">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/FiveM-Logo.png" alt="FiveM">
+          <div class="game-name">FiveM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="now-playing">Eye of the Tiger · gra w tle</div>
+
+    <footer>Cobra Kai · Szara Strefa</footer>
+  </div>
+
+  <audio id="tiger" autoplay loop>
+    <source src="eye-of-the-tiger.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    const a = document.getElementById('tiger');
+    a.play().catch(() => {
+      document.body.addEventListener('click', () => a.play(), { once: true });
+    });
+  </script>
+</body>
+</html>
