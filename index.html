@@ -218,7 +218,10 @@ button:hover {
   padding: 4px 8px;
   background: #334155;
 }
-.admin-only { display: none; }
+.admin-only { display: none !important; }
+body.admin-mode .admin-only { display: block !important; }
+body.admin-mode .form-row.admin-only { display: flex !important; }
+body.admin-mode .admin-panel .admin-only { display: inline-block !important; }
 .admin-panel {
   position: fixed;
   bottom: 20px;
@@ -269,14 +272,17 @@ button:hover {
       <div id="discord-setup" class="admin-only">
         <input type="text" id="discord-id" placeholder="Twój Discord User ID">
         <button onclick="saveDiscordId()">ZAPISZ ID</button>
-        <p class="small-note">Dołącz do serwera Lanyard: discord.gg/lanyard<br>Potem wklej swoje ID</p>
+        <p class="small-note">1. Dołącz do: discord.gg/lanyard<br>2. Wklej swoje User ID</p>
       </div>
-      <div id="discord-profile">
+      <div id="discord-profile" style="display:none;">
         <img id="discord-avatar" class="discord-avatar" src="" alt="avatar">
         <h3 id="discord-name"></h3>
         <p id="discord-status-line"><span class="status-dot" id="status-dot"></span><span id="discord-status"></span></p>
         <div id="discord-activity"></div>
         <button class="edit-btn admin-only" onclick="changeDiscordId()">Zmień ID</button>
+      </div>
+      <div id="discord-placeholder" style="opacity:0.6; margin-top:10px;">
+        Profil Discord pojawi się po ustawieniu ID (tylko admin)
       </div>
     </div>
 
@@ -392,17 +398,11 @@ const ADMIN_PASSWORD = 'hacker123'; // <-- ZMIEŃ TO HASŁO
 let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
 function updateAdminUI() {
-  document.querySelectorAll('.admin-only').forEach(el => {
-    if (isAdmin) {
-      el.style.display = '';
-      // przywróć prawidłowy display dla form-row
-      if (el.classList.contains('form-row')) {
-        el.style.display = 'flex';
-      }
-    } else {
-      el.style.display = 'none';
-    }
-  });
+  if (isAdmin) {
+    document.body.classList.add('admin-mode');
+  } else {
+    document.body.classList.remove('admin-mode');
+  }
   document.getElementById('admin-login-btn').style.display = isAdmin ? 'none' : 'inline-block';
   document.getElementById('admin-logout-btn').style.display = isAdmin ? 'inline-block' : 'none';
   document.getElementById('export-btn').style.display = isAdmin ? 'inline-block' : 'none';
@@ -469,7 +469,12 @@ function applyData() {
   renderSocials();
   renderGames();
   renderVideos();
-  if (DATA.discordId) loadDiscord();
+  if (DATA.discordId) {
+    loadDiscord();
+  } else {
+    document.getElementById('discord-profile').style.display = 'none';
+    document.getElementById('discord-placeholder').style.display = 'block';
+  }
 }
 
 document.getElementById('title-input')?.addEventListener('change', (e) => {
@@ -480,23 +485,34 @@ document.getElementById('title-input')?.addEventListener('change', (e) => {
 function saveDiscordId() {
   const id = document.getElementById('discord-id').value.trim();
   if (!id) return alert('Wklej Discord User ID');
+  if (!/^\d{17,20}$/.test(id)) return alert('To nie wygląda na poprawne Discord ID (powinno być samymi cyframi, ok. 18-19 znaków)');
   DATA.discordId = id;
+  alert('ID zapisane lokalnie. Kliknij „Pobierz data.json” i wgraj go na GitHub, żeby wszyscy widzieli profil.');
   loadDiscord();
 }
 function changeDiscordId() {
   DATA.discordId = '';
   document.getElementById('discord-setup').style.display = 'block';
   document.getElementById('discord-profile').style.display = 'none';
+  document.getElementById('discord-placeholder').style.display = 'block';
 }
 
 async function loadDiscord() {
-  if (!DATA.discordId) return;
+  if (!DATA.discordId) {
+    document.getElementById('discord-profile').style.display = 'none';
+    document.getElementById('discord-placeholder').style.display = 'block';
+    return;
+  }
   document.getElementById('discord-setup').style.display = 'none';
+  document.getElementById('discord-placeholder').style.display = 'none';
   document.getElementById('discord-profile').style.display = 'block';
   try {
     const res = await fetch(`https://api.lanyard.rest/v1/users/${DATA.discordId}`);
     const json = await res.json();
-    if (!json.success) throw new Error();
+    if (!json.success) {
+      document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd: Nieprawidłowe ID lub nie jesteś na serwerze Lanyard (discord.gg/lanyard)</p>';
+      return;
+    }
     const d = json.data;
     const user = d.discord_user;
     const avatar = user.avatar 
@@ -522,7 +538,7 @@ async function loadDiscord() {
     }
     document.getElementById('discord-activity').innerHTML = activityHtml || '<p style="opacity:0.6">Brak aktywności</p>';
   } catch (e) {
-    document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd ładowania profilu. Sprawdź ID i czy jesteś na serwerze Lanyard.</p>';
+    document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd połączenia z Lanyard. Sprawdź internet i czy jesteś na serwerze Lanyard.</p>';
   }
 }
 
@@ -531,7 +547,7 @@ function renderSocials() {
   list.innerHTML = DATA.socials.map((s, i) => `
     <div class="social-item">
       <a href="${s.url}" target="_blank">${s.name}</a>
-      <button class="edit-btn admin-only" onclick="removeSocial(${i})" style="display:${isAdmin ? '' : 'none'}">✕</button>
+      <button class="edit-btn admin-only" onclick="removeSocial(${i})">✕</button>
     </div>
   `).join('') || '<p style="opacity:0.6">Brak linków</p>';
 }
@@ -557,7 +573,7 @@ function renderGames() {
         <span>${g.name}</span>
         <small style="display:block; opacity:0.7">${g.desc || ''}</small>
       </div>
-      <button class="edit-btn admin-only" onclick="removeGame(${i})" style="display:${isAdmin ? '' : 'none'}">✕</button>
+      <button class="edit-btn admin-only" onclick="removeGame(${i})">✕</button>
     </div>
   `).join('');
 }
@@ -581,7 +597,7 @@ function renderVideos() {
     <div class="video-item" style="flex-direction:column; align-items:stretch;">
       <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
         <strong>${v.title}</strong>
-        <button class="edit-btn admin-only" onclick="removeVideo(${i})" style="display:${isAdmin ? '' : 'none'}">✕</button>
+        <button class="edit-btn admin-only" onclick="removeVideo(${i})">✕</button>
       </div>
       <video class="video-player" controls>
         <source src="${v.src}" type="video/mp4">
