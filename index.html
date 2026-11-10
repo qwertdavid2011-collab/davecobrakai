@@ -1,193 +1,533 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cobra Kai</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0c0c0c;
-      --card: #141414;
-      --border: rgba(255,255,255,0.08);
-      --red: #e10600;
-      --yellow: #f9ed31;
-      --text: #f0f0f0;
-      --muted: #888;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-    .wrap {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 48px 20px 80px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    .logo {
-      width: 180px;
-      height: auto;
-      margin-bottom: 16px;
-    }
-    .subtitle {
-      font-family: 'Oswald', sans-serif;
-      font-size: 13px;
-      letter-spacing: 2.5px;
-      color: var(--yellow);
-      text-transform: uppercase;
-      opacity: 0.9;
-    }
-    .section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-    .section-title {
-      font-family: 'Oswald', sans-serif;
-      font-size: 15px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--yellow);
-      margin-bottom: 16px;
-    }
-    .leader {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 0;
-    }
-    .leader + .leader {
-      border-top: 1px solid var(--border);
-      margin-top: 8px;
-      padding-top: 20px;
-    }
-    .avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--red);
-    }
-    .name {
-      font-weight: 600;
-      font-size: 16px;
-    }
-    .role {
-      font-size: 13px;
-      color: var(--muted);
-      margin: 2px 0 8px;
-    }
-    .discord {
-      display: inline-block;
-      background: #5865F2;
-      color: white;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 6px;
-    }
-    .games {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .game {
-      background: #1a1a1a;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .game img {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-    }
-    .game-name {
-      padding: 10px 8px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .now-playing {
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKER PROFILE</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #a855f7;
+  --dark-green: #022c22;
+  --green: #10b981;
+  --yellow: #facc15;
+  --bg: #020617;
+  --card: #0f172a;
+  --text: #e2e8f0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+#matrix {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  opacity: 0.15;
+  pointer-events: none;
+}
+.scanlines {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.3;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+header {
+  text-align: center;
+  padding: 40px 20px;
+  border-bottom: 2px solid var(--purple);
+  margin-bottom: 30px;
+  position: relative;
+}
+header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  color: var(--yellow);
+  text-shadow: 0 0 20px var(--purple), 0 0 40px var(--green);
+  letter-spacing: 4px;
+  animation: glitch 3s infinite;
+}
+@keyframes glitch {
+  0%, 100% { text-shadow: 0 0 20px var(--purple), 0 0 40px var(--green); transform: translate(0); }
+  20% { text-shadow: -2px 0 var(--purple), 2px 0 var(--green); transform: translate(-2px, 1px); }
+  40% { text-shadow: 2px 0 var(--purple), -2px 0 var(--green); transform: translate(2px, -1px); }
+  60% { text-shadow: 0 0 20px var(--yellow); transform: translate(0); }
+}
+header .tagline {
+  color: var(--green);
+  font-size: 1.2rem;
+  margin-top: 10px;
+  letter-spacing: 2px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+.card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--purple);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+.card:hover {
+  border-color: var(--yellow);
+  box-shadow: 0 0 35px rgba(250, 204, 21, 0.4);
+  transform: translateY(-5px);
+}
+.card h2 {
+  color: var(--purple);
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+  border-bottom: 1px solid var(--green);
+  padding-bottom: 8px;
+}
+.discord-card {
+  text-align: center;
+}
+.discord-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--purple);
+  margin: 0 auto 15px;
+  box-shadow: 0 0 20px var(--purple);
+  object-fit: cover;
+}
+.status-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.status-online { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+.status-idle { background: #eab308; box-shadow: 0 0 10px #eab308; }
+.status-dnd { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+.status-offline { background: #64748b; }
+.activity {
+  background: rgba(2, 44, 34, 0.6);
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border-left: 3px solid var(--green);
+}
+.social-item, .game-item, .video-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 8px 0;
+  background: rgba(2, 6, 23, 0.7);
+  border-radius: 6px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+.social-item a, .game-item span {
+  color: var(--yellow);
+  text-decoration: none;
+  font-weight: bold;
+}
+.social-item a:hover { color: var(--green); text-shadow: 0 0 10px var(--green); }
+button, input, textarea {
+  background: #1e293b;
+  color: var(--text);
+  border: 1px solid var(--purple);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  margin: 5px 0;
+}
+button {
+  background: linear-gradient(45deg, var(--purple), var(--dark-green));
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  transition: all 0.2s;
+}
+button:hover {
+  background: linear-gradient(45deg, var(--yellow), var(--purple));
+  color: black;
+  box-shadow: 0 0 15px var(--yellow);
+}
+.form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.form-row input { flex: 1; min-width: 150px; }
+#enter-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.95);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#enter-overlay h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  color: var(--yellow);
+  margin-bottom: 20px;
+  text-shadow: 0 0 20px var(--purple);
+}
+#enter-btn {
+  font-size: 1.5rem;
+  padding: 15px 40px;
+  margin: 20px;
+}
+.video-player {
+  width: 100%;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--green);
+}
+.small-note {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+.edit-btn {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  background: #334155;
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <img src="cobra-kai-logo.jpg" alt="Cobra Kai" class="logo">
-      <div class="subtitle">Strike First · Strike Hard · No Mercy</div>
-    </header>
+<canvas id="matrix"></canvas>
+<div class="scanlines"></div>
 
-    <div class="section">
-      <div class="section-title">Liderstwo</div>
-      <div class="leader">
-        <img src="https://r2.guns.lol/7b164cdc-af3c-468c-bbf3-730956cb912a.webp" class="avatar" alt=".DaVe">
-        <div>
-          <div class="name">.DaVe</div>
-          <div class="role">Lider · Boss Szarej Strefy</div>
-          <a href="https://discord.com/users/your-id" class="discord" target="_blank">Discord</a>
-        </div>
-      </div>
-      <div class="leader">
-        <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar" alt="Lider" style="background:#5865F2;">
-        <div>
-          <div class="name">Drugi Lider</div>
-          <div class="role">Lider</div>
-          <a href="https://discord.com/users/334720799485329418" class="discord" target="_blank">Discord</a>
-        </div>
-      </div>
-    </div>
+<div id="enter-overlay">
+  <h2>ACCESS GRANTED</h2>
+  <p style="color: var(--green); margin-bottom: 10px;">Kliknij aby wejść i puścić Miami Yacine - Kokaina</p>
+  <button id="enter-btn">▶ ENTER / PLAY KOKAINA</button>
+  <p class="small-note">Muzyka startuje po interakcji (polityka przeglądarek)</p>
+</div>
 
-    <div class="section">
-      <div class="section-title">Gry</div>
-      <div class="games">
-        <div class="game">
-          <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/cocrs8.jpg" alt="Arena Breakout Infinite">
-          <div class="game-name">Arena Breakout Infinite</div>
-        </div>
-        <div class="game">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/FiveM-Logo.png" alt="FiveM">
-          <div class="game-name">FiveM</div>
-        </div>
+<div class="container" id="main-content" style="display:none;">
+  <header>
+    <h1 id="site-title">HACKER_ZONE</h1>
+    <div class="tagline">// DARK • GREEN • PURPLE • YELLOW</div>
+    <input type="text" id="title-input" placeholder="Zmień tytuł strony" style="margin-top:15px; max-width:300px;">
+  </header>
+
+  <div class="grid">
+    <!-- DISCORD -->
+    <div class="card discord-card">
+      <h2>⚡ DISCORD PROFILE</h2>
+      <div id="discord-setup">
+        <input type="text" id="discord-id" placeholder="Twój Discord User ID">
+        <button onclick="saveDiscordId()">ZAPISZ ID</button>
+        <p class="small-note">Dołącz do serwera Lanyard: discord.gg/lanyard<br>Potem wklej swoje ID (ustawienia → zaawansowane → tryb deweloperski)</p>
+      </div>
+      <div id="discord-profile" style="display:none;">
+        <img id="discord-avatar" class="discord-avatar" src="" alt="avatar">
+        <h3 id="discord-name"></h3>
+        <p id="discord-status-line"><span class="status-dot" id="status-dot"></span><span id="discord-status"></span></p>
+        <div id="discord-activity"></div>
+        <button class="edit-btn" onclick="changeDiscordId()">Zmień ID</button>
       </div>
     </div>
 
-    <div class="now-playing">Eye of the Tiger · gra w tle</div>
+    <!-- SOCIALS -->
+    <div class="card">
+      <h2>🔗 SOCIAL MEDIA</h2>
+      <div id="socials-list"></div>
+      <div class="form-row">
+        <input type="text" id="social-name" placeholder="Nazwa (np. Instagram)">
+        <input type="text" id="social-url" placeholder="Link">
+        <button onclick="addSocial()">DODAJ</button>
+      </div>
+    </div>
 
-    <footer>Cobra Kai · Szara Strefa</footer>
+    <!-- GAMES -->
+    <div class="card">
+      <h2>🎮 GRY</h2>
+      <div id="games-list"></div>
+      <div class="form-row">
+        <input type="text" id="game-name" placeholder="Nazwa gry">
+        <input type="text" id="game-desc" placeholder="Opis / platforma">
+        <button onclick="addGame()">DODAJ GRĘ</button>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="card">
+      <h2>🎬 FILMIKI MP4</h2>
+      <div id="videos-list"></div>
+      <div class="form-row">
+        <input type="text" id="video-title" placeholder="Tytuł filmiku">
+        <input type="text" id="video-url" placeholder="Link do MP4 (lub zostaw puste)">
+        <input type="file" id="video-file" accept="video/mp4" style="flex:1;">
+        <button onclick="addVideo()">DODAJ FILMIK</button>
+      </div>
+      <p class="small-note">Pliki z komputera działają tylko w tej sesji. Lepiej podaj bezpośredni link do MP4.</p>
+    </div>
   </div>
+</div>
 
-  <audio id="tiger" autoplay loop>
-    <source src="eye-of-the-tiger.mp3" type="audio/mpeg">
-  </audio>
-  <script>
-    const a = document.getElementById('tiger');
-    a.play().catch(() => {
-      document.body.addEventListener('click', () => a.play(), { once: true });
-    });
-  </script>
+<!-- YouTube Player (hidden) -->
+<div id="yt-player" style="position:fixed; bottom:-9999px; left:-9999px;"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('yt-player', {
+    height: '1',
+    width: '1',
+    videoId: '2CGv2Ud-KoE', // Miami Yacine - Kokaina
+    playerVars: { autoplay: 0, controls: 0, disablekb: 1, modestbranding: 1 },
+    events: { onReady: onPlayerReady }
+  });
+}
+function onPlayerReady(event) {
+  // Czekamy na kliknięcie
+}
+
+// Matrix background
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(2, 6, 23, 0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#10b981';
+  ctx.font = fontSize + 'px monospace';
+  for (let i = 0; i < drops.length; i++) {
+    const text = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 35);
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// Enter overlay
+document.getElementById('enter-btn').onclick = () => {
+  document.getElementById('enter-overlay').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+  if (player && player.playVideo) {
+    player.playVideo();
+    player.setVolume(70);
+  }
+};
+
+// Data storage
+const STORAGE = {
+  discordId: localStorage.getItem('discordId') || '',
+  title: localStorage.getItem('siteTitle') || 'HACKER_ZONE',
+  socials: JSON.parse(localStorage.getItem('socials') || '[]'),
+  games: JSON.parse(localStorage.getItem('games') || '[{"name":"Arena Breakout Infinite","desc":"Taktyczna strzelanka"},{"name":"FiveM","desc":"GTA V Roleplay"}]'),
+  videos: JSON.parse(localStorage.getItem('videos') || '[]')
+};
+
+function saveAll() {
+  localStorage.setItem('discordId', STORAGE.discordId);
+  localStorage.setItem('siteTitle', STORAGE.title);
+  localStorage.setItem('socials', JSON.stringify(STORAGE.socials));
+  localStorage.setItem('games', JSON.stringify(STORAGE.games));
+  localStorage.setItem('videos', JSON.stringify(STORAGE.videos));
+}
+
+// Title
+document.getElementById('site-title').textContent = STORAGE.title;
+document.getElementById('title-input').value = STORAGE.title;
+document.getElementById('title-input').onchange = (e) => {
+  STORAGE.title = e.target.value || 'HACKER_ZONE';
+  document.getElementById('site-title').textContent = STORAGE.title;
+  saveAll();
+};
+
+// Discord
+function saveDiscordId() {
+  const id = document.getElementById('discord-id').value.trim();
+  if (!id) return alert('Wklej Discord User ID');
+  STORAGE.discordId = id;
+  saveAll();
+  loadDiscord();
+}
+function changeDiscordId() {
+  STORAGE.discordId = '';
+  saveAll();
+  document.getElementById('discord-setup').style.display = 'block';
+  document.getElementById('discord-profile').style.display = 'none';
+}
+async function loadDiscord() {
+  if (!STORAGE.discordId) return;
+  document.getElementById('discord-setup').style.display = 'none';
+  document.getElementById('discord-profile').style.display = 'block';
+  try {
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${STORAGE.discordId}`);
+    const json = await res.json();
+    if (!json.success) throw new Error();
+    const d = json.data;
+    const user = d.discord_user;
+    const avatar = user.avatar 
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
+      : 'https://cdn.discordapp.com/embed/avatars/0.png';
+    document.getElementById('discord-avatar').src = avatar;
+    document.getElementById('discord-name').textContent = user.global_name || user.username;
+    const statusMap = { online: 'Online', idle: 'Idle', dnd: 'Nie przeszkadzać', offline: 'Offline' };
+    document.getElementById('discord-status').textContent = statusMap[d.discord_status] || d.discord_status;
+    const dot = document.getElementById('status-dot');
+    dot.className = 'status-dot status-' + (d.discord_status || 'offline');
+
+    let activityHtml = '';
+    if (d.listening_to_spotify && d.spotify) {
+      activityHtml += `<div class="activity"><strong>🎧 Spotify:</strong> ${d.spotify.song}<br><small>${d.spotify.artist}</small></div>`;
+    }
+    if (d.activities && d.activities.length) {
+      d.activities.forEach(act => {
+        if (act.type === 0) { // Playing
+          activityHtml += `<div class="activity"><strong>🎮 Gra:</strong> ${act.name}<br><small>${act.details || ''}</small></div>`;
+        }
+      });
+    }
+    document.getElementById('discord-activity').innerHTML = activityHtml || '<p style="opacity:0.6">Brak aktywności</p>';
+  } catch (e) {
+    document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd ładowania profilu. Sprawdź ID i czy jesteś na serwerze Lanyard.</p>';
+  }
+}
+if (STORAGE.discordId) {
+  document.getElementById('discord-id').value = STORAGE.discordId;
+  loadDiscord();
+  setInterval(loadDiscord, 20000); // odśwież co 20s
+}
+
+// Socials
+function renderSocials() {
+  const list = document.getElementById('socials-list');
+  list.innerHTML = STORAGE.socials.map((s, i) => `
+    <div class="social-item">
+      <a href="${s.url}" target="_blank">${s.name}</a>
+      <button class="edit-btn" onclick="removeSocial(${i})">✕</button>
+    </div>
+  `).join('') || '<p style="opacity:0.6">Brak linków – dodaj poniżej</p>';
+}
+function addSocial() {
+  const name = document.getElementById('social-name').value.trim();
+  const url = document.getElementById('social-url').value.trim();
+  if (!name || !url) return alert('Wypełnij nazwę i link');
+  STORAGE.socials.push({ name, url: url.startsWith('http') ? url : 'https://' + url });
+  saveAll();
+  renderSocials();
+  document.getElementById('social-name').value = '';
+  document.getElementById('social-url').value = '';
+}
+function removeSocial(i) {
+  STORAGE.socials.splice(i, 1);
+  saveAll();
+  renderSocials();
+}
+renderSocials();
+
+// Games
+function renderGames() {
+  const list = document.getElementById('games-list');
+  list.innerHTML = STORAGE.games.map((g, i) => `
+    <div class="game-item">
+      <div>
+        <span>${g.name}</span>
+        <small style="display:block; opacity:0.7">${g.desc || ''}</small>
+      </div>
+      <button class="edit-btn" onclick="removeGame(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function addGame() {
+  const name = document.getElementById('game-name').value.trim();
+  const desc = document.getElementById('game-desc').value.trim();
+  if (!name) return alert('Podaj nazwę gry');
+  STORAGE.games.push({ name, desc });
+  saveAll();
+  renderGames();
+  document.getElementById('game-name').value = '';
+  document.getElementById('game-desc').value = '';
+}
+function removeGame(i) {
+  STORAGE.games.splice(i, 1);
+  saveAll();
+  renderGames();
+}
+renderGames();
+
+// Videos
+function renderVideos() {
+  const list = document.getElementById('videos-list');
+  list.innerHTML = STORAGE.videos.map((v, i) => `
+    <div class="video-item" style="flex-direction:column; align-items:stretch;">
+      <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+        <strong>${v.title}</strong>
+        <button class="edit-btn" onclick="removeVideo(${i})">✕</button>
+      </div>
+      <video class="video-player" controls>
+        <source src="${v.src}" type="video/mp4">
+      </video>
+    </div>
+  `).join('') || '<p style="opacity:0.6">Brak filmików</p>';
+}
+function addVideo() {
+  const title = document.getElementById('video-title').value.trim() || 'Bez tytułu';
+  const url = document.getElementById('video-url').value.trim();
+  const fileInput = document.getElementById('video-file');
+  let src = url;
+  if (fileInput.files[0]) {
+    src = URL.createObjectURL(fileInput.files[0]);
+  }
+  if (!src) return alert('Podaj link lub wybierz plik MP4');
+  STORAGE.videos.push({ title, src });
+  saveAll();
+  renderVideos();
+  document.getElementById('video-title').value = '';
+  document.getElementById('video-url').value = '';
+  fileInput.value = '';
+}
+function removeVideo(i) {
+  STORAGE.videos.splice(i, 1);
+  saveAll();
+  renderVideos();
+}
+renderVideos();
+</script>
 </body>
 </html>
