@@ -104,9 +104,7 @@ header .tagline {
   border-bottom: 1px solid var(--green);
   padding-bottom: 8px;
 }
-.discord-card {
-  text-align: center;
-}
+.discord-card { text-align: center; }
 .discord-avatar {
   width: 120px;
   height: 120px;
@@ -220,6 +218,17 @@ button:hover {
   padding: 4px 8px;
   background: #334155;
 }
+.admin-only { display: none; }
+.admin-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1500;
+}
+.admin-panel button {
+  font-size: 0.9rem;
+  padding: 10px 16px;
+}
 </style>
 </head>
 <body>
@@ -237,24 +246,26 @@ button:hover {
   <header>
     <h1 id="site-title">HACKER_ZONE</h1>
     <div class="tagline">// DARK • GREEN • PURPLE • YELLOW</div>
-    <input type="text" id="title-input" placeholder="Zmień tytuł strony" style="margin-top:15px; max-width:300px;">
+    <div class="admin-only">
+      <input type="text" id="title-input" placeholder="Zmień tytuł strony" style="margin-top:15px; max-width:300px;">
+    </div>
   </header>
 
   <div class="grid">
     <!-- DISCORD -->
     <div class="card discord-card">
       <h2>⚡ DISCORD PROFILE</h2>
-      <div id="discord-setup">
+      <div id="discord-setup" class="admin-only">
         <input type="text" id="discord-id" placeholder="Twój Discord User ID">
         <button onclick="saveDiscordId()">ZAPISZ ID</button>
-        <p class="small-note">Dołącz do serwera Lanyard: discord.gg/lanyard<br>Potem wklej swoje ID (ustawienia → zaawansowane → tryb deweloperski)</p>
+        <p class="small-note">Dołącz do serwera Lanyard: discord.gg/lanyard<br>Potem wklej swoje ID</p>
       </div>
-      <div id="discord-profile" style="display:none;">
+      <div id="discord-profile">
         <img id="discord-avatar" class="discord-avatar" src="" alt="avatar">
         <h3 id="discord-name"></h3>
         <p id="discord-status-line"><span class="status-dot" id="status-dot"></span><span id="discord-status"></span></p>
         <div id="discord-activity"></div>
-        <button class="edit-btn" onclick="changeDiscordId()">Zmień ID</button>
+        <button class="edit-btn admin-only" onclick="changeDiscordId()">Zmień ID</button>
       </div>
     </div>
 
@@ -262,7 +273,7 @@ button:hover {
     <div class="card">
       <h2>🔗 SOCIAL MEDIA</h2>
       <div id="socials-list"></div>
-      <div class="form-row">
+      <div class="form-row admin-only">
         <input type="text" id="social-name" placeholder="Nazwa (np. Instagram)">
         <input type="text" id="social-url" placeholder="Link">
         <button onclick="addSocial()">DODAJ</button>
@@ -273,7 +284,7 @@ button:hover {
     <div class="card">
       <h2>🎮 GRY</h2>
       <div id="games-list"></div>
-      <div class="form-row">
+      <div class="form-row admin-only">
         <input type="text" id="game-name" placeholder="Nazwa gry">
         <input type="text" id="game-desc" placeholder="Opis / platforma">
         <button onclick="addGame()">DODAJ GRĘ</button>
@@ -284,18 +295,34 @@ button:hover {
     <div class="card">
       <h2>🎬 FILMIKI MP4</h2>
       <div id="videos-list"></div>
-      <div class="form-row">
+      <div class="form-row admin-only">
         <input type="text" id="video-title" placeholder="Tytuł filmiku">
-        <input type="text" id="video-url" placeholder="Link do MP4 (lub zostaw puste)">
-        <input type="file" id="video-file" accept="video/mp4" style="flex:1;">
+        <input type="text" id="video-url" placeholder="Link do MP4">
         <button onclick="addVideo()">DODAJ FILMIK</button>
       </div>
-      <p class="small-note">Pliki z komputera działają tylko w tej sesji. Lepiej podaj bezpośredni link do MP4.</p>
+      <p class="small-note admin-only">Używaj bezpośrednich linków do MP4 (np. z GitHub, Google Drive z udostępnieniem publicznym itp.)</p>
     </div>
   </div>
 </div>
 
-<!-- YouTube Player (hidden) -->
+<!-- Admin panel -->
+<div class="admin-panel">
+  <button id="admin-login-btn" onclick="showLogin()">🔐 ADMIN</button>
+  <button id="admin-logout-btn" class="admin-only" onclick="logoutAdmin()" style="display:none;">Wyloguj</button>
+  <button id="export-btn" class="admin-only" onclick="exportData()" style="display:none;">⬇️ Pobierz data.json</button>
+</div>
+
+<div id="login-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; align-items:center; justify-content:center;">
+  <div style="background:#0f172a; padding:30px; border-radius:12px; border:2px solid var(--purple); text-align:center;">
+    <h3 style="color:var(--yellow); margin-bottom:15px;">HASŁO ADMINA</h3>
+    <input type="password" id="admin-password" placeholder="Wpisz hasło" style="width:220px; margin-bottom:15px;">
+    <br>
+    <button onclick="loginAdmin()">ZALOGUJ</button>
+    <button onclick="document.getElementById('login-modal').style.display='none'" style="margin-left:10px;">ANULUJ</button>
+    <p class="small-note" style="margin-top:15px;">Domyślne hasło: hacker123<br>(zmień je w kodzie jeśli chcesz)</p>
+  </div>
+</div>
+
 <div id="yt-player" style="position:fixed; bottom:-9999px; left:-9999px;"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -305,16 +332,14 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
     height: '1',
     width: '1',
-    videoId: '2CGv2Ud-KoE', // Miami Yacine - Kokaina
+    videoId: '2CGv2Ud-KoE',
     playerVars: { autoplay: 0, controls: 0, disablekb: 1, modestbranding: 1 },
     events: { onReady: onPlayerReady }
   });
 }
-function onPlayerReady(event) {
-  // Czekamy na kliknięcie
-}
+function onPlayerReady(event) {}
 
-// Matrix background
+// Matrix
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -342,7 +367,6 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
-// Enter overlay
 document.getElementById('enter-btn').onclick = () => {
   document.getElementById('enter-overlay').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
@@ -352,52 +376,105 @@ document.getElementById('enter-btn').onclick = () => {
   }
 };
 
-// Data storage
-const STORAGE = {
-  discordId: localStorage.getItem('discordId') || '',
-  title: localStorage.getItem('siteTitle') || 'HACKER_ZONE',
-  socials: JSON.parse(localStorage.getItem('socials') || '[]'),
-  games: JSON.parse(localStorage.getItem('games') || '[{"name":"Arena Breakout Infinite","desc":"Taktyczna strzelanka"},{"name":"FiveM","desc":"GTA V Roleplay"}]'),
-  videos: JSON.parse(localStorage.getItem('videos') || '[]')
-};
+// ============ ADMIN ============
+const ADMIN_PASSWORD = 'hacker123'; // <-- ZMIEŃ TO HASŁO
+let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
-function saveAll() {
-  localStorage.setItem('discordId', STORAGE.discordId);
-  localStorage.setItem('siteTitle', STORAGE.title);
-  localStorage.setItem('socials', JSON.stringify(STORAGE.socials));
-  localStorage.setItem('games', JSON.stringify(STORAGE.games));
-  localStorage.setItem('videos', JSON.stringify(STORAGE.videos));
+function updateAdminUI() {
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = isAdmin ? '' : 'none';
+  });
+  document.getElementById('admin-login-btn').style.display = isAdmin ? 'none' : 'inline-block';
+  document.getElementById('admin-logout-btn').style.display = isAdmin ? 'inline-block' : 'none';
+  document.getElementById('export-btn').style.display = isAdmin ? 'inline-block' : 'none';
 }
 
-// Title
-document.getElementById('site-title').textContent = STORAGE.title;
-document.getElementById('title-input').value = STORAGE.title;
-document.getElementById('title-input').onchange = (e) => {
-  STORAGE.title = e.target.value || 'HACKER_ZONE';
-  document.getElementById('site-title').textContent = STORAGE.title;
-  saveAll();
+function showLogin() {
+  document.getElementById('login-modal').style.display = 'flex';
+  document.getElementById('admin-password').value = '';
+  document.getElementById('admin-password').focus();
+}
+
+function loginAdmin() {
+  const pass = document.getElementById('admin-password').value;
+  if (pass === ADMIN_PASSWORD) {
+    isAdmin = true;
+    sessionStorage.setItem('isAdmin', 'true');
+    updateAdminUI();
+    document.getElementById('login-modal').style.display = 'none';
+    alert('Zalogowano jako admin. Możesz teraz edytować.');
+  } else {
+    alert('Złe hasło');
+  }
+}
+
+function logoutAdmin() {
+  isAdmin = false;
+  sessionStorage.removeItem('isAdmin');
+  updateAdminUI();
+}
+
+// ============ DATA ============
+let DATA = {
+  title: 'HACKER_ZONE',
+  discordId: '',
+  socials: [],
+  games: [
+    { name: 'Arena Breakout Infinite', desc: 'Taktyczna strzelanka' },
+    { name: 'FiveM', desc: 'GTA V Roleplay' }
+  ],
+  videos: []
 };
 
-// Discord
+async function loadData() {
+  try {
+    const res = await fetch('data.json?t=' + Date.now());
+    if (res.ok) {
+      const json = await res.json();
+      DATA = { ...DATA, ...json };
+    }
+  } catch (e) {
+    console.log('Brak data.json lub błąd ładowania – używam domyślnych danych');
+  }
+  applyData();
+}
+
+function applyData() {
+  document.getElementById('site-title').textContent = DATA.title || 'HACKER_ZONE';
+  document.title = DATA.title || 'HACKER PROFILE';
+  if (isAdmin) {
+    document.getElementById('title-input').value = DATA.title || '';
+    document.getElementById('discord-id').value = DATA.discordId || '';
+  }
+  renderSocials();
+  renderGames();
+  renderVideos();
+  if (DATA.discordId) loadDiscord();
+}
+
+document.getElementById('title-input')?.addEventListener('change', (e) => {
+  DATA.title = e.target.value || 'HACKER_ZONE';
+  document.getElementById('site-title').textContent = DATA.title;
+});
+
 function saveDiscordId() {
   const id = document.getElementById('discord-id').value.trim();
   if (!id) return alert('Wklej Discord User ID');
-  STORAGE.discordId = id;
-  saveAll();
+  DATA.discordId = id;
   loadDiscord();
 }
 function changeDiscordId() {
-  STORAGE.discordId = '';
-  saveAll();
+  DATA.discordId = '';
   document.getElementById('discord-setup').style.display = 'block';
   document.getElementById('discord-profile').style.display = 'none';
 }
+
 async function loadDiscord() {
-  if (!STORAGE.discordId) return;
+  if (!DATA.discordId) return;
   document.getElementById('discord-setup').style.display = 'none';
   document.getElementById('discord-profile').style.display = 'block';
   try {
-    const res = await fetch(`https://api.lanyard.rest/v1/users/${STORAGE.discordId}`);
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${DATA.discordId}`);
     const json = await res.json();
     if (!json.success) throw new Error();
     const d = json.data;
@@ -418,7 +495,7 @@ async function loadDiscord() {
     }
     if (d.activities && d.activities.length) {
       d.activities.forEach(act => {
-        if (act.type === 0) { // Playing
+        if (act.type === 0) {
           activityHtml += `<div class="activity"><strong>🎮 Gra:</strong> ${act.name}<br><small>${act.details || ''}</small></div>`;
         }
       });
@@ -428,49 +505,39 @@ async function loadDiscord() {
     document.getElementById('discord-activity').innerHTML = '<p style="color:#ef4444">Błąd ładowania profilu. Sprawdź ID i czy jesteś na serwerze Lanyard.</p>';
   }
 }
-if (STORAGE.discordId) {
-  document.getElementById('discord-id').value = STORAGE.discordId;
-  loadDiscord();
-  setInterval(loadDiscord, 20000); // odśwież co 20s
-}
 
-// Socials
 function renderSocials() {
   const list = document.getElementById('socials-list');
-  list.innerHTML = STORAGE.socials.map((s, i) => `
+  list.innerHTML = DATA.socials.map((s, i) => `
     <div class="social-item">
       <a href="${s.url}" target="_blank">${s.name}</a>
-      <button class="edit-btn" onclick="removeSocial(${i})">✕</button>
+      <button class="edit-btn admin-only" onclick="removeSocial(${i})" style="display:${isAdmin ? '' : 'none'}">✕</button>
     </div>
-  `).join('') || '<p style="opacity:0.6">Brak linków – dodaj poniżej</p>';
+  `).join('') || '<p style="opacity:0.6">Brak linków</p>';
 }
 function addSocial() {
   const name = document.getElementById('social-name').value.trim();
   const url = document.getElementById('social-url').value.trim();
   if (!name || !url) return alert('Wypełnij nazwę i link');
-  STORAGE.socials.push({ name, url: url.startsWith('http') ? url : 'https://' + url });
-  saveAll();
+  DATA.socials.push({ name, url: url.startsWith('http') ? url : 'https://' + url });
   renderSocials();
   document.getElementById('social-name').value = '';
   document.getElementById('social-url').value = '';
 }
 function removeSocial(i) {
-  STORAGE.socials.splice(i, 1);
-  saveAll();
+  DATA.socials.splice(i, 1);
   renderSocials();
 }
-renderSocials();
 
-// Games
 function renderGames() {
   const list = document.getElementById('games-list');
-  list.innerHTML = STORAGE.games.map((g, i) => `
+  list.innerHTML = DATA.games.map((g, i) => `
     <div class="game-item">
       <div>
         <span>${g.name}</span>
         <small style="display:block; opacity:0.7">${g.desc || ''}</small>
       </div>
-      <button class="edit-btn" onclick="removeGame(${i})">✕</button>
+      <button class="edit-btn admin-only" onclick="removeGame(${i})" style="display:${isAdmin ? '' : 'none'}">✕</button>
     </div>
   `).join('');
 }
@@ -478,27 +545,23 @@ function addGame() {
   const name = document.getElementById('game-name').value.trim();
   const desc = document.getElementById('game-desc').value.trim();
   if (!name) return alert('Podaj nazwę gry');
-  STORAGE.games.push({ name, desc });
-  saveAll();
+  DATA.games.push({ name, desc });
   renderGames();
   document.getElementById('game-name').value = '';
   document.getElementById('game-desc').value = '';
 }
 function removeGame(i) {
-  STORAGE.games.splice(i, 1);
-  saveAll();
+  DATA.games.splice(i, 1);
   renderGames();
 }
-renderGames();
 
-// Videos
 function renderVideos() {
   const list = document.getElementById('videos-list');
-  list.innerHTML = STORAGE.videos.map((v, i) => `
+  list.innerHTML = DATA.videos.map((v, i) => `
     <div class="video-item" style="flex-direction:column; align-items:stretch;">
       <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
         <strong>${v.title}</strong>
-        <button class="edit-btn" onclick="removeVideo(${i})">✕</button>
+        <button class="edit-btn admin-only" onclick="removeVideo(${i})" style="display:${isAdmin ? '' : 'none'}">✕</button>
       </div>
       <video class="video-player" controls>
         <source src="${v.src}" type="video/mp4">
@@ -509,25 +572,30 @@ function renderVideos() {
 function addVideo() {
   const title = document.getElementById('video-title').value.trim() || 'Bez tytułu';
   const url = document.getElementById('video-url').value.trim();
-  const fileInput = document.getElementById('video-file');
-  let src = url;
-  if (fileInput.files[0]) {
-    src = URL.createObjectURL(fileInput.files[0]);
-  }
-  if (!src) return alert('Podaj link lub wybierz plik MP4');
-  STORAGE.videos.push({ title, src });
-  saveAll();
+  if (!url) return alert('Podaj link do MP4');
+  DATA.videos.push({ title, src: url });
   renderVideos();
   document.getElementById('video-title').value = '';
   document.getElementById('video-url').value = '';
-  fileInput.value = '';
 }
 function removeVideo(i) {
-  STORAGE.videos.splice(i, 1);
-  saveAll();
+  DATA.videos.splice(i, 1);
   renderVideos();
 }
-renderVideos();
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.json';
+  a.click();
+  alert('Pobierz plik data.json i wgraj go do repozytorium na GitHubie (zastąp stary).');
+}
+
+// Init
+updateAdminUI();
+loadData();
+setInterval(() => { if (DATA.discordId) loadDiscord(); }, 20000);
 </script>
 </body>
 </html>
