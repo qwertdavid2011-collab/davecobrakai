@@ -510,13 +510,22 @@ async function loadDiscord() {
 
   const urls = [
     `https://api.lanyard.rest/v1/users/${DATA.discordId}`,
-    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`
+    `https://corsproxy.io/?${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.lanyard.rest/v1/users/${DATA.discordId}`)}`
   ];
 
   let lastError = '';
   for (const url of urls) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      if (res.status === 403) {
+        lastError = 'HTTP 403 (serwer odrzucił zapytanie – spróbuj na komputerze lub innej przeglądarce)';
+        continue;
+      }
       if (!res.ok) {
         lastError = `HTTP ${res.status}`;
         continue;
@@ -550,7 +559,7 @@ async function loadDiscord() {
         });
       }
       document.getElementById('discord-activity').innerHTML = activityHtml || '<p style="opacity:0.6">Brak aktywności</p>';
-      return; // sukces
+      return;
     } catch (e) {
       lastError = e.message || 'Błąd sieci';
     }
@@ -559,7 +568,7 @@ async function loadDiscord() {
   document.getElementById('discord-activity').innerHTML = `
     <p style="color:#ef4444">Błąd ładowania profilu</p>
     <p class="small-note">Szczegóły: ${lastError}</p>
-    <p class="small-note">Upewnij się, że:<br>1. Jesteś na serwerze discord.gg/lanyard<br>2. ID jest poprawne (same cyfry)<br>3. Wyłączyłeś bloker reklam</p>
+    <p class="small-note">Spróbuj:<br>1. Otworzyć stronę na komputerze<br>2. Innej przeglądarce (Chrome/Firefox)<br>3. Wyłączyć VPN/bloker reklam<br>4. Sprawdzić czy jesteś na discord.gg/lanyard</p>
   `;
 }
 
