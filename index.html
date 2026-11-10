@@ -779,22 +779,25 @@ async function addGame(event) {
 
   if (/^\d+$/.test(input)) {
     const steamUrls = [
+      `https://api.allorigins.win/get?url=${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${input}`)}`,
       `https://corsproxy.io/?${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${input}`)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${input}`)}`
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${input}`)}`
     ];
     for (const url of steamUrls) {
       try {
         const ctrl = new AbortController();
-        const t = setTimeout(() => ctrl.abort(), 5000);
+        const t = setTimeout(() => ctrl.abort(), 6000);
         const res = await fetch(url, { signal: ctrl.signal });
         clearTimeout(t);
         if (!res.ok) continue;
-        const json = await res.json();
+        let json = await res.json();
+        // allorigins wraps in .contents
+        if (json.contents) json = JSON.parse(json.contents);
         const data = json[input]?.data;
         if (data && data.name) {
           name = data.name;
-          if (!desc) desc = (data.short_description || '').slice(0, 100);
-          icon = data.header_image || '';
+          if (!desc) desc = (data.short_description || '').slice(0, 120);
+          icon = data.header_image || icon;
           break;
         }
       } catch (e) { continue; }
