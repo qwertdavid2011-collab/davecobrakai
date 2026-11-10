@@ -5,208 +5,157 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cobra Kai</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0c0c0c;
+      --card: #141414;
+      --border: rgba(255,255,255,0.08);
+      --red: #e10600;
+      --yellow: #f9ed31;
+      --text: #f0f0f0;
+      --muted: #888;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background: #0a0a0a;
-      color: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
       min-height: 100vh;
-      overflow-x: hidden;
     }
-    .bg-overlay {
-      position: fixed; inset: 0;
-      background: radial-gradient(ellipse at top, rgba(180,0,0,0.15) 0%, #0a0a0a 70%);
-      z-index: -1;
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
     }
     header {
       text-align: center;
-      padding: 40px 20px 20px;
+      margin-bottom: 48px;
     }
     .logo {
-      max-width: 280px;
-      width: 80%;
-      filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.4));
+      width: 180px;
+      height: auto;
+      margin-bottom: 16px;
     }
-    .tagline {
-      margin-top: 12px;
+    .subtitle {
       font-family: 'Oswald', sans-serif;
-      font-size: 1.4rem;
-      letter-spacing: 3px;
-      color: #f9ed31;
+      font-size: 13px;
+      letter-spacing: 2.5px;
+      color: var(--yellow);
       text-transform: uppercase;
+      opacity: 0.9;
     }
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 0 20px 60px;
-    }
-    .card {
-      background: rgba(18, 18, 18, 0.85);
-      border: 1px solid rgba(249, 237, 49, 0.25);
-      border-radius: 20px;
-      padding: 28px 22px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(180,0,0,0.15);
-    }
-    h2 {
-      font-family: 'Oswald', sans-serif;
-      text-align: center;
-      color: #f9ed31;
-      font-size: 1.6rem;
-      letter-spacing: 2px;
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
       margin-bottom: 20px;
-      text-transform: uppercase;
     }
-    .leaders {
-      display: grid;
-      gap: 16px;
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 15px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 16px;
     }
     .leader {
       display: flex;
       align-items: center;
-      gap: 16px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.06);
-      transition: border-color 0.2s, transform 0.2s;
+      gap: 14px;
+      padding: 12px 0;
     }
-    .leader:hover {
-      border-color: #e10600;
-      transform: translateY(-2px);
+    .leader + .leader {
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+      padding-top: 20px;
     }
-    .leader-avatar {
-      width: 72px;
-      height: 72px;
+    .avatar {
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #e10600;
-      box-shadow: 0 0 15px rgba(225, 6, 0, 0.5);
+      border: 2px solid var(--red);
     }
-    .leader-info h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.25rem;
-      color: #fff;
-    }
-    .leader-role {
-      color: #f9ed31;
-      font-size: 0.85rem;
+    .name {
       font-weight: 600;
-      margin: 2px 0 6px;
+      font-size: 16px;
     }
-    .discord-link {
+    .role {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 2px 0 8px;
+    }
+    .discord {
       display: inline-block;
       background: #5865F2;
       color: white;
       text-decoration: none;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
     }
-    .discord-link:hover { background: #4752c4; }
-    .games-grid {
+    .games {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    .game-card {
-      background: rgba(255,255,255,0.04);
+    .game {
+      background: #1a1a1a;
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      text-align: center;
+      border: 1px solid var(--border);
     }
-    .game-card img {
+    .game img {
       width: 100%;
-      height: 90px;
+      height: 100px;
       object-fit: cover;
     }
-    .game-card p {
-      padding: 8px 4px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .music-note {
+    .game-name {
+      padding: 10px 8px;
       text-align: center;
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: #aaa;
+      font-size: 13px;
+      font-weight: 500;
     }
     footer {
       text-align: center;
-      padding: 30px;
-      color: #666;
-      font-size: 0.75rem;
+      margin-top: 40px;
+      font-size: 12px;
+      color: var(--muted);
     }
-    @media (max-width: 480px) {
-      .logo { max-width: 220px; }
-      .tagline { font-size: 1.1rem; }
+    .now-playing {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
-  <div class="bg-overlay"></div>
+  <div class="wrap">
+    <header>
+      <img src="cobra-kai-logo.jpg" alt="Cobra Kai" class="logo">
+      <div class="subtitle">Strike First · Strike Hard · No Mercy</div>
+    </header>
 
-  <header>
-    <img src="cobra-kai-logo.jpg" alt="Cobra Kai" class="logo">
-    <div class="tagline">Strike First • Strike Hard • No Mercy</div>
-  </header>
-
-  <div class="container">
-    <div class="card">
-      <h2>Liderstwo</h2>
-      <div class="leaders">
-        <div class="leader">
-          <img src="https://r2.guns.lol/7b164cdc-af3c-468c-bbf3-730956cb912a.webp" alt=".DaVe" class="leader-avatar">
-          <div class="leader-info">
-            <h3>.DaVe</h3>
-            <div class="leader-role">Lider • Boss Szarej Strefy</div>
-            <a href="https://discord.com/users/your-id" class="discord-link" target="_blank">Discord</a>
-          </div>
-        </div>
-        <div class="leader">
-          <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Lider 2" class="leader-avatar" style="background:#5865F2;">
-          <div class="leader-info">
-            <h3>Drugi Lider</h3>
-            <div class="leader-role">Lider</div>
-            <a href="https://discord.com/users/334720799485329418" class="discord-link" target="_blank">Discord</a>
-          </div>
+    <div class="section">
+      <div class="section-title">Liderstwo</div>
+      <div class="leader">
+        <img src="https://r2.guns.lol/7b164cdc-af3c-468c-bbf3-730956cb912a.webp" class="avatar" alt=".DaVe">
+        <div>
+          <div class="name">.DaVe</div>
+          <div class="role">Lider · Boss Szarej Strefy</div>
+          <a href="https://discord.com/users/your-id" class="discord" target="_blank">Discord</a>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>Gry</h2>
-      <div class="games-grid">
-        <div class="game-card">
-          <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/cocrs8.jpg" alt="Arena Breakout Infinite">
-          <p>Arena Breakout Infinite</p>
-        </div>
-        <div class="game-card">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/FiveM-Logo.png" alt="FiveM">
-          <p>FiveM</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="music-note">🎵 Eye of the Tiger gra w tle</div>
-  </div>
-
-  <footer>Cobra Kai • Szara Strefa Gospodarki</footer>
-
-  <audio id="tiger" autoplay loop>
-    <source src="eye-of-the-tiger.mp3" type="audio/mpeg">
-  </audio>
-
-  <script>
-    const audio = document.getElementById('tiger');
-    // Try to play immediately, fallback on first interaction
-    audio.play().catch(() => {
-      document.body.addEventListener('click', () => audio.play(), { once: true });
-    });
-  </script>
-</body>
-</html>
+      <div class="leader">
+        <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar" alt="Lider" style="background:#5865F2;">
+        <div>
+          <div class="name">Drugi Lider</div>
+          <div class="role">Lider</div>
+          <a href="https://discord.com/users/334720799485329418" class="discord" target="_blank">Discord</a>
+        </
+... 
