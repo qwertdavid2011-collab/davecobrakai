@@ -1,22 +1,67 @@
 {
   "title": "Szara Strefa Gospodarki",
-  "discordId": "",
-  "socials": [],
+  "discordId": "295257285163220996",
+  "socials": [
+    {
+      "name": "Mój Kanał YouTube",
+      "url": "https://www.youtube.com/@DaVe2601"
+    },
+    {
+      "name": "Mój TikTok",
+      "url": "https://www.tiktok.com/@.dave982?is_from_webapp=1&sender_device=pc"
+    },
+    {
+      "name": "Moje Portfolio Map MTA SA",
+      "url": "https://davemapdesign.cc"
+    },
+    {
+      "name": "Mój Serwer Discord",
+      "url": "https://discord.gg/vc3YtAsSqQ"
+    },
+    {
+      "name": "Mój Steam",
+      "url": "https://steamcommunity.com/profiles/76561198215103761/"
+    }
+  ],
   "games": [
     {
-      "name": "Arena Breakout Infinite",
-      "desc": "Taktyczna strzelanka"
+      "name": "2073620",
+      "desc": "Shoot|Loot|Extract",
+      "icon": "https://cdn.cloudflare.steamstatic.com/steam/apps/2073620/header.jpg"
     },
     {
       "name": "FiveM",
-      "desc": "GTA V Roleplay"
+      "desc": "GTA V MultiPlayer",
+      "icon": "https://assets.zx.zap-hosting.com/cdn/games/fivem/icon/icon-steamgriddb-o452en.png"
+    },
+    {
+      "name": "Fortnite",
+      "desc": "Battle Royale",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Fortnite_F_lettermark_logo.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original"
     }
   ],
-  "videos": [],
+  "videos": [
+    {
+      "title": ".DaVe - PoloWagen",
+      "src": "https://www.youtube.com/watch?v=5pFvJ-2GBM8"
+    }
+  ],
   "playlist": [
     {
       "id": "2CGv2Ud-KoE",
       "title": "Miami Yacine - Kokaina"
+    },
+    {
+      "id": "W9AyiQteoB4",
+      "title": "Słoń - Chrum Chrum"
+    },
+    {
+      "id": "s71olxc-Hs8",
+      "title": "fun. - We Are Young"
+    },
+    {
+      "id": "cZid3J36wH8",
+      "title": "Europe - Final Countdown"
     }
   ]
 }
