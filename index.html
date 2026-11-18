@@ -423,8 +423,8 @@ body.admin-mode .form-row.admin-only { display: flex; }
 <div class="container" id="main-content" style="display:none;">
   <header>
     <div class="eyebrow">/ 01 — PROFILE</div>
-    <h1 id="site-title">.DaVe SSG</h1>
-    <div class="tagline">Oficjalna strona grupy SSG</div>
+    <h1 id="site-title">HACKER_ZONE</h1>
+    <div class="tagline">Dark · Purple · Green · Yellow</div>
     <div class="admin-only" style="margin-top: 20px;">
       <input type="text" id="title-input" placeholder="Zmień tytuł" style="max-width: 280px;">
     </div>
@@ -493,6 +493,18 @@ body.admin-mode .form-row.admin-only { display: flex; }
         </div>
         <p class="small-note admin-only">Bezpośredni link do .mp4 albo link YouTube</p>
       </div>
+
+      <!-- Playlist -->
+      <div class="card">
+        <h2>Muzyka w tle</h2>
+        <div id="playlist-list"></div>
+        <div class="form-row admin-only">
+          <input type="text" id="song-title" placeholder="Tytuł (opcjonalnie)">
+          <input type="text" id="song-url" placeholder="Link YouTube">
+          <button onclick="addSong()">Dodaj</button>
+        </div>
+        <p class="small-note admin-only">Link YouTube. Po każdym wejściu kolejność jest losowa, po końcu utworu leci następny.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -500,10 +512,12 @@ body.admin-mode .form-row.admin-only { display: flex; }
 <!-- Music panel -->
 <div class="music-panel" id="music-panel" style="display:none;">
   <button id="music-toggle" onclick="toggleMusic()">⏸ Pauza</button>
+  <button id="music-next" onclick="nextTrack()" title="Następny">⏭</button>
   <div class="volume-wrap">
     <input type="range" id="volume-slider" min="0" max="100" value="60" style="--val:60%" oninput="setVolume(this.value)">
     <span id="volume-label" style="font-size:0.75rem; color:var(--text-dim); min-width:32px;">60%</span>
   </div>
+  <span id="now-playing" style="font-size:0.75rem; color:var(--text-dim); max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
 </div>
 
 <!-- Admin panel -->
@@ -530,27 +544,101 @@ body.admin-mode .form-row.admin-only { display: flex; }
 <script>
 let player = null;
 let playerReady = false;
+let playQueue = [];
+let playIndex = 0;
+let musicStarted = false;
+
+function extractYoutubeId(url) {
+  if (!url) return '';
+  const m = String(url).trim().match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|^[a-zA-Z0-9_-]{11}$)([a-zA-Z0-9_-]{11})?/);
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
+  const m2 = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([a-zA-Z0-9_-]{11})/);
+  return m2 ? m2[1] : '';
+}
+
+function getPlaylist() {
+  const list = Array.isArray(DATA.playlist) ? DATA.playlist : [];
+  return list.filter(s => s && s.id);
+}
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function updateNowPlaying() {
+  const el = document.getElementById('now-playing');
+  if (!el) return;
+  const cur = playQueue[playIndex];
+  el.textContent = cur ? (cur.title || cur.id) : '';
+}
+
+function playCurrentTrack() {
+  if (!playerReady || !player || !playQueue.length) return;
+  const cur = playQueue[playIndex];
+  if (!cur) return;
+  updateNowPlaying();
+  player.loadVideoById(cur.id);
+  player.unMute();
+  const vol = parseInt(document.getElementById('volume-slider')?.value || '60', 10);
+  player.setVolume(vol);
+  player.playVideo();
+  document.getElementById('music-toggle').textContent = '⏸ Pauza';
+}
+
+function nextTrack() {
+  if (!playQueue.length) return;
+  playIndex = (playIndex + 1) % playQueue.length;
+  playCurrentTrack();
+}
+
+function startMusicSession() {
+  const list = getPlaylist();
+  if (!list.length) {
+    playQueue = [{ id: '2CGv2Ud-KoE', title: 'Miami Yacine - Kokaina' }];
+  } else {
+    playQueue = shuffleArray(list);
+  }
+  playIndex = 0;
+  musicStarted = true;
+  function attemptPlay() {
+    if (playerReady && player && typeof player.loadVideoById === 'function') {
+      playCurrentTrack();
+    } else {
+      setTimeout(attemptPlay, 200);
+    }
+  }
+  attemptPlay();
+}
 
 window.onYouTubeIframeAPIReady = function() {
+  const first = getPlaylist()[0] || { id: '2CGv2Ud-KoE' };
   player = new YT.Player('yt-player', {
     height: '1',
     width: '1',
-    videoId: '2CGv2Ud-KoE',
+    videoId: first.id,
     playerVars: {
       autoplay: 0,
       controls: 0,
-      loop: 1,
-      playlist: '2CGv2Ud-KoE',
       modestbranding: 1,
       rel: 0
     },
     events: {
       onReady: function() {
         playerReady = true;
-        console.log('YouTube player ready');
       },
-      onError: function(e) {
-        console.log('YouTube error', e.data);
+      onStateChange: function(e) {
+        // 0 = ended
+        if (e.data === 0 && musicStarted && playQueue.length) {
+          nextTrack();
+        }
+      },
+      onError: function() {
+        if (musicStarted && playQueue.length > 1) nextTrack();
       }
     }
   });
@@ -560,17 +648,7 @@ document.getElementById('enter-btn').onclick = function() {
   document.getElementById('enter-overlay').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('music-panel').style.display = 'flex';
-
-  function attemptPlay() {
-    if (playerReady && player && typeof player.playVideo === 'function') {
-      player.unMute();
-      player.setVolume(60);
-      player.playVideo();
-    } else {
-      setTimeout(attemptPlay, 200);
-    }
-  }
-  attemptPlay();
+  startMusicSession();
 };
 
 function toggleMusic() {
@@ -631,13 +709,22 @@ let DATA = {
     { name: 'Arena Breakout Infinite', desc: 'Taktyczna strzelanka' },
     { name: 'FiveM', desc: 'GTA V Roleplay' }
   ],
-  videos: []
+  videos: [],
+  playlist: [
+    { id: '2CGv2Ud-KoE', title: 'Miami Yacine - Kokaina' }
+  ]
 };
 
 async function loadData() {
   try {
     const res = await fetch('data.json?t=' + Date.now());
-    if (res.ok) DATA = { ...DATA, ...await res.json() };
+    if (res.ok) {
+      const json = await res.json();
+      DATA = { ...DATA, ...json };
+      if (!Array.isArray(DATA.playlist) || !DATA.playlist.length) {
+        DATA.playlist = [{ id: '2CGv2Ud-KoE', title: 'Miami Yacine - Kokaina' }];
+      }
+    }
   } catch (e) {}
   applyData();
 }
@@ -651,6 +738,7 @@ function applyData() {
   renderSocials();
   renderGames();
   renderVideos();
+  renderPlaylist();
   if (DATA.discordId) loadDiscord();
   else {
     document.getElementById('discord-profile').style.display = 'none';
@@ -840,6 +928,35 @@ function addVideo() {
   document.getElementById('video-url').value = '';
 }
 function removeVideo(i) { DATA.videos.splice(i,1); renderVideos(); }
+
+function renderPlaylist() {
+  const list = getPlaylist();
+  document.getElementById('playlist-list').innerHTML = list.map((s,i) => `
+    <div class="item">
+      <div>
+        <span class="name">${s.title || s.id}</span>
+        <span class="desc">${s.id}</span>
+      </div>
+      <button class="edit-btn admin-only" onclick="removeSong(${i})">✕</button>
+    </div>`).join('') || '<p style="color:var(--text-dim);font-size:0.9rem;">Brak utworów</p>';
+}
+function addSong() {
+  const url = document.getElementById('song-url').value.trim();
+  const title = document.getElementById('song-title').value.trim();
+  const id = extractYoutubeId(url);
+  if (!id) return alert('Podaj poprawny link YouTube lub ID (11 znaków)');
+  if (!Array.isArray(DATA.playlist)) DATA.playlist = [];
+  if (DATA.playlist.some(s => s.id === id)) return alert('Ten utwór już jest na liście');
+  DATA.playlist.push({ id, title: title || id });
+  renderPlaylist();
+  document.getElementById('song-url').value = '';
+  document.getElementById('song-title').value = '';
+}
+function removeSong(i) {
+  if (!Array.isArray(DATA.playlist)) return;
+  DATA.playlist.splice(i, 1);
+  renderPlaylist();
+}
 
 function exportData() {
   const a = document.createElement('a');
